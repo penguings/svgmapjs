@@ -1,4 +1,4 @@
-import {ProxyManager} from "../libs/ProxyManager";
+import {ProxyManager} from "../src/libs/ProxyManager";
 import {jest} from "@jest/globals";
 
 // ユースケースがよくわかってないため実装ありきの試験になっています

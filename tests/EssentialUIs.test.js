@@ -1,5 +1,5 @@
-import {EssentialUIs} from "../libs/EssentialUIs";
-import {mock_svgmapObj, mock_mapViewerProps} from "../resources/mockParamerters";
+import {EssentialUIs} from "../src/libs/EssentialUIs";
+import {mock_svgmapObj, mock_mapViewerProps} from "../src/resources/mockParamerters";
 import {jest} from "@jest/globals";
 import * as fs from "node:fs/promises";
 

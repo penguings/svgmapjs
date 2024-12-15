@@ -1,4 +1,4 @@
-import { ResumeManager } from "../libs/ResumeManager";
+import { ResumeManager } from "../src/libs/ResumeManager";
 import {jest} from "@jest/globals";
 
 const urlPatterns = [

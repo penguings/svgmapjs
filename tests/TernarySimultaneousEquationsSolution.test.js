@@ -1,4 +1,4 @@
-import {TernarySimultaneousEquationsSolution} from "../libs/TernarySimultaneousEquationsSolution";
+import {TernarySimultaneousEquationsSolution} from "../src/libs/TernarySimultaneousEquationsSolution";
 
 describe("",()=>{
 	describe("3元1次連立方程式",()=>{

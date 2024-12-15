@@ -1,4 +1,4 @@
-import {MatrixUtil,GenericMatrix, Mercator} from "../libs/TransformLib";
+import {MatrixUtil,GenericMatrix, Mercator} from "../src/libs/TransformLib";
 
 describe("unittest for TransformLib",()=>{
     describe("target GenericMatrix class",()=>{

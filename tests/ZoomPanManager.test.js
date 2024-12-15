@@ -1,4 +1,4 @@
-import {ZoomPanManager} from "../libs/ZoomPanManager";
+import {ZoomPanManager} from "../src/libs/ZoomPanManager";
 import {jest} from "@jest/globals";
 import * as fs from "node:fs/promises";
 

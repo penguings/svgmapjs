@@ -1,4 +1,4 @@
-import {PathHitTester} from "../libs/PathHitTester";
+import {PathHitTester} from "../src/libs/PathHitTester";
 import {jest} from "@jest/globals"
 
 describe("target PathHitTest class",()=>{

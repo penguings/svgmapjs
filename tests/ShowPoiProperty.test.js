@@ -1,4 +1,4 @@
-import {ShowPoiProperty} from "../libs/ShowPoiProperty";
+import {ShowPoiProperty} from "../src/libs/ShowPoiProperty";
 import {jest} from '@jest/globals';
 
 describe("unittest for ShowPoiProperty",()=>{

@@ -1,4 +1,4 @@
-import {UAtester} from "../libs/UAtester";
+import {UAtester} from "../src/libs/UAtester";
 
 // https://stackoverflow.com/questions/73018146/jest-repeatedly-mock-navigator-test-against-useragent-vendor
 // https://kzstock.blogspot.com/2023/01/useragent20230104.html

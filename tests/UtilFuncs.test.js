@@ -1,5 +1,5 @@
-import {UtilFuncs} from "../libs/UtilFuncs";
-import {SvgMapElementType} from "../libs/SvgMapElementType";
+import {UtilFuncs} from "../src/libs/UtilFuncs";
+import {SvgMapElementType} from "../src/libs/SvgMapElementType";
 import {jest} from '@jest/globals';
 import * as fs from "node:fs/promises";
 

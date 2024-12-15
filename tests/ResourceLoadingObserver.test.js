@@ -1,6 +1,6 @@
-import { ResourceLoadingObserver } from "../libs/ResourceLoadingObserver";
+import { ResourceLoadingObserver } from "../src/libs/ResourceLoadingObserver";
 import {jest} from "@jest/globals";
-import { ZoomPanManager } from "../libs/ZoomPanManager";
+import { ZoomPanManager } from "../src/libs/ZoomPanManager";
 
 const statusPattern = [
 	{

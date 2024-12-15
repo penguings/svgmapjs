@@ -1,4 +1,4 @@
-import {PoiHitTester} from "../libs/PoiHitTester"
+import {PoiHitTester} from "../src/libs/PoiHitTester"
 
 describe("",()=>{
 	let poi;

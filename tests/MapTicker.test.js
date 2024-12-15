@@ -1,5 +1,5 @@
-import {MapTicker} from "../libs/MapTicker";
-import {mock_svgmapObj} from "../resources/mockParamerters"
+import {MapTicker} from "../src/libs/MapTicker";
+import {mock_svgmapObj} from "../src/resources/mockParamerters"
 import {jest} from "@jest/globals";
 
 describe("unittest for MapTicker",()=>{
