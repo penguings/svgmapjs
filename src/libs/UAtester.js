@@ -1,7 +1,6 @@
 // UAtester: ブラウザが何かを判別するクラス
 // Programmed by Satoru Takagi
-//
-// 2022/08/17 coreから切り出し
+
 // uaProp isIE,verIE,isSPなどをまとめる
 // IE系のメンバーは既に意味はなくなっている（IEサポートは終了済み）後ほど整理・・
 

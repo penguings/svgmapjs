@@ -1,6 +1,5 @@
 // 汎化されたmatrix (GenericMatrix)を用いて、種々の座標変換を行うライブラリクラス
 // Programmed by Satoru Takagi
-// 2022/08/16 SVGMap.jsから切り出し
 
 class MatrixUtil {
 	getTransformedBox( inBox , matrix){

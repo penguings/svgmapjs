@@ -1,6 +1,5 @@
 // SVGMap.jsのzoom/panに関する機能を制御するモジュール
 // Programmed by Satoru Takagi
-// 2022/08/16 SVGMap.jsから切り出し
 
 class ZoomPanManager{
 	#panning = false;

@@ -1,5 +1,4 @@
 //  window間で、メッセージングによってデータのやり取りをする。
-// 2022/08/10
 // Programmed by Satoru Takagi
 
 class InterWindowMessaging{

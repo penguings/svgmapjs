@@ -1,8 +1,6 @@
 // svgMap.js coreの、captureGISgeometries関連機能を切り分けたクラス
 // Programmed by Satoru Takagi
-// 
-// 2022/08/18～
-//
+
 // 2023/11/21 GISgeometriesCaptureOptions.captureAlsoAsBitImage : ベクタデータのラスタイメージも追加で取得するオプション(実装中)
 
 import { MatrixUtil } from './TransformLib.js';

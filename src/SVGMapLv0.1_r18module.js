@@ -27,11 +27,7 @@
 //  
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-// 
-//
-//
-//
-// 2023/12/28 SVGMapLv0.1_Class_r18module.jsをコアにして、new SVGMap()する部分を切り離した。
+
 // 今後、拡張機能を使いたい場合は、このデフォルトモジュールに代えて、自分で作ったモジュールから、オプション付きでnew SVGMap(options)とすることで初期化段階を変化させることができる感じ
 
 
