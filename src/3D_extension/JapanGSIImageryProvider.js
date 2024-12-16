@@ -1,5 +1,5 @@
 //**
-(function(){
+(function () {
     var
         Credit = Cesium.Credit,
         defaultValue = Cesium.defaultValue,
@@ -91,7 +91,7 @@
         if (zoomString.match(zoomStringRegex)) {
             var min = RegExp.$1;
             var max = RegExp.$2;
-            return max ? [parseInt(min),parseInt(max)] : [parseInt(min),parseInt(min)];
+            return max ? [parseInt(min), parseInt(max)] : [parseInt(min), parseInt(min)];
         }
         return [];
     }
@@ -120,12 +120,12 @@
             if (minmax[0] < min) min = minmax[0];
             if (minmax[1] > max) max = minmax[1];
 
-            for (var j=minmax[0];j<=minmax[1];j++) {
+            for (var j = minmax[0]; j <= minmax[1]; j++) {
                 if (!layerList[j]) layerList[j] = optionLayer;
             }
         }
 
-        for (var i=min;i<=max;i++) {
+        for (var i = min; i <= max; i++) {
             if (!layerList[i]) throw "No layer definition for zoom level" + i;
         }
         if (max < min) throw "There are no valid layer definition";
@@ -199,20 +199,20 @@
     }
 
     defineProperties(JapanGSIImageryProvider.prototype, {
-        url : {
-            get : function() {
+        url: {
+            get: function () {
                 return this._url;
             }
         },
 
-        proxy : {
-            get : function() {
+        proxy: {
+            get: function () {
                 return this._proxy;
             }
         },
 
-        tileWidth : {
-            get : function() {
+        tileWidth: {
+            get: function () {
                 if (!this._ready) {
                     throw new DeveloperError('tileWidth must not be called before the imagery provider is ready.');
                 }
@@ -222,7 +222,7 @@
         },
 
         tileHeight: {
-            get : function() {
+            get: function () {
                 if (!this._ready) {
                     throw new DeveloperError('tileHeight must not be called before the imagery provider is ready.');
                 }
@@ -231,8 +231,8 @@
             }
         },
 
-        maximumLevel : {
-            get : function() {
+        maximumLevel: {
+            get: function () {
                 if (!this._ready) {
                     throw new DeveloperError('maximumLevel must not be called before the imagery provider is ready.');
                 }
@@ -241,8 +241,8 @@
             }
         },
 
-        minimumLevel : {
-            get : function() {
+        minimumLevel: {
+            get: function () {
                 if (!this._ready) {
                     throw new DeveloperError('minimumLevel must not be called before the imagery provider is ready.');
                 }
@@ -251,8 +251,8 @@
             }
         },
 
-        tilingScheme : {
-            get : function() {
+        tilingScheme: {
+            get: function () {
                 if (!this._ready) {
                     throw new DeveloperError('tilingScheme must not be called before the imagery provider is ready.');
                 }
@@ -261,8 +261,8 @@
             }
         },
 
-        rectangle : {
-            get : function() {
+        rectangle: {
+            get: function () {
                 if (!this._ready) {
                     throw new DeveloperError('rectangle must not be called before the imagery provider is ready.');
                 }
@@ -271,8 +271,8 @@
             }
         },
 
-        tileDiscardPolicy : {
-            get : function() {
+        tileDiscardPolicy: {
+            get: function () {
                 if (!this._ready) {
                     throw new DeveloperError('tileDiscardPolicy must not be called before the imagery provider is ready.');
                 }
@@ -281,36 +281,36 @@
             }
         },
 
-        errorEvent : {
-            get : function() {
+        errorEvent: {
+            get: function () {
                 return this._errorEvent;
             }
         },
 
-        ready : {
-            get : function() {
+        ready: {
+            get: function () {
                 return this._ready;
             }
         },
 
-        credit : {
-            get : function() {
+        credit: {
+            get: function () {
                 return this._credit;
             }
         },
 
-        hasAlphaChannel : {
-            get : function() {
+        hasAlphaChannel: {
+            get: function () {
                 return true;
             }
         }
     });
 
-    JapanGSIImageryProvider.prototype.getTileCredits = function(x, y, level) {
+    JapanGSIImageryProvider.prototype.getTileCredits = function (x, y, level) {
         return undefined;
     };
 
-    JapanGSIImageryProvider.prototype.requestImage = function(x, y, level) {
+    JapanGSIImageryProvider.prototype.requestImage = function (x, y, level) {
         if (!this._ready) {
             throw new DeveloperError('requestImage must not be called before the imagery provider is ready.');
         }
@@ -319,7 +319,7 @@
         return ImageryProvider.loadImage(this, url);
     };
 
-    JapanGSIImageryProvider.prototype.pickFeatures = function() {
+    JapanGSIImageryProvider.prototype.pickFeatures = function () {
         return undefined;
     };
 

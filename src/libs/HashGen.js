@@ -1,11 +1,11 @@
 // このモジュールはどこにも今のところ使われていません
 // ただ、もったいないので残置しておきます
 
-class HashGen{
+class HashGen {
 
 	// CRC16を一応置いておきます
 	// https://github.com/donvercety/node-crc16/
-	static crc16(str){
+	static crc16(str) {
 		const crctab16 = new Uint16Array([
 			0X0000, 0X1189, 0X2312, 0X329B, 0X4624, 0X57AD, 0X6536, 0X74BF,
 			0X8C48, 0X9DC1, 0XAF5A, 0XBED3, 0XCA6C, 0XDBE5, 0XE97E, 0XF8F7,
@@ -56,7 +56,7 @@ class HashGen{
 	static async #sha256(str) {
 		//https://scrapbox.io/nwtgck/SHA256のハッシュをJavaScriptのWeb標準のライブラリだけで計算する
 		// window.cryptoかも・・
-		if ( typeof(crypto)!="object"){console.error("crypto is not");return;}
+		if (typeof (crypto) != "object") { console.error("crypto is not"); return; }
 		const buff = new Uint8Array([].map.call(str, (c) => c.charCodeAt(0))).buffer;
 		const digest = await crypto.subtle.digest('SHA-256', buff);
 		// (from: https://stackoverflow.com/a/40031979)
@@ -65,4 +65,4 @@ class HashGen{
 
 }
 
-export{HashGen};
+export { HashGen };

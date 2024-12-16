@@ -34,7 +34,7 @@ class SVGMapSerializer {
 					case "txtAreaSVGMap": // 値設定決定用
 						body.innerHTML = UtilFuncs.escape(
 							'<?xml version="1.0" encoding="UTF-8"?>\n' +
-								this.xml2Str(poi.ownerDocument.documentElement)
+							this.xml2Str(poi.ownerDocument.documentElement)
 						);
 						break;
 					case "txtAreaClose": // 値設定決定用

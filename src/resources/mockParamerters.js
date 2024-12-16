@@ -1,37 +1,37 @@
-import {jest} from "@jest/globals";
+import { jest } from "@jest/globals";
 
 // 単体試験で頻繁に使用するオブジェクトをmock化してます
 // TODO:以下のパラメータはSVGMapLv0.1_rXXmoduleに含まれており、いずれ外だしが必要
 const mock_svgmapObj = {
-    refreshScreen: jest.fn(), 
+    refreshScreen: jest.fn(),
     getSvgImagesProps: jest.fn().mockReturnValue({
-        "root":{"Path":{"location":{"href":"aaa"}}},
+        "root": { "Path": { "location": { "href": "aaa" } } },
     }),
     getSvgImages: jest.fn(),
     getRootLayersProps: jest.fn().mockReturnValue([]),
-    getGeoViewBox: jest.fn().mockReturnValue({"x":0,"y":0,"width":0,"height":0}),
-    getMapCanvasSize: jest.fn().mockReturnValue({width: 1200, height: 800})
+    getGeoViewBox: jest.fn().mockReturnValue({ "x": 0, "y": 0, "width": 0, "height": 0 }),
+    getMapCanvasSize: jest.fn().mockReturnValue({ width: 1200, height: 800 })
 };
 
 const mock_mapViewerProps = {
-    mapCanvasSize:{
+    mapCanvasSize: {
         width: 800,
         height: 600
     },
-    rootViewBox:{
+    rootViewBox: {
         width: 800,
         height: 600,
-        x:500,
-        y:450
+        x: 500,
+        y: 450
     },
-    rootCrs:{
-        x:1,
-        y:1
+    rootCrs: {
+        x: 1,
+        y: 1
     },
-    uaProps:{
-        verIE:11
+    uaProps: {
+        verIE: 11
     },
-    setRootViewBox:jest.fn()
+    setRootViewBox: jest.fn()
 };
 
 
