@@ -1,7 +1,7 @@
 import terser from "@rollup/plugin-terser";
 
 export default {
-    input: "src/SVGMapLv0.1_r18module.js",
+    input: "src/SVGMapLv0.1_Class_r18module.js",
     output: {
         file: "dist/svgmapjs.esm.js",
         format: "esm"
