@@ -18,35 +18,7 @@
 //  
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-// 
-// History:
-// Rev1: Rev11以前の内蔵システム
-// 2016/12/16 Rev2: Start Porting from Rev11 code and Modularization
-// 2016/12/21 Base FW Rev11のオーサリングコードとほぼ同等(以上)のものを移植完了 
-// 2016/12/28 Rev3: Polygon/Polyline Tools
-// 2017/01/30 Rev4: Rubber Band for Polyline/Polygon
-// 2017/02/03 Rev5: Point入力UIのTextArea使用を廃止する(for Tablet devices)
-// 2017/02/xx Rev6: ポリゴンUIのdelete機能を改善
-// 2017/03/17 zoomPanMap -> screenRefreshed + zoomPanMap
-// 2017/06/09 Rev7: add POIregistTool
-// 2018/02/01 minor bug fix
-// 2018/02/02 cursor.style.zIndexを設定するようにした(toBeDel on rev15対策)
-// 2018/03/05 polylineを編集できる機能をおおよそ実装
-// 2019/03/12 POIのアイコン定義が1個しかない場合はアイコン選択UI省略
-// 2019/03/12 タイリングされたレイヤーに対して処理可能にする(制約としては、タイルにあるオブジェクトを編集したものは保持されない。新規のオブジェクトはレイヤルートに設置。メタデータスキーマ・アイコン定義は、共通のものをレイヤールートにも設置必要)
-// 2019/12/27 refreshScreen後コールバック処理の精密化
-// 2020/01/21 同上マイナー修正
-// 2020/07/17 redis用でブランチしていた機能を取り込み(poiToolsの帰り値オプション)
-// 2021/03/16 POIregistTool(initPOIregistToolの方)でタッチイベントでの座標入力に対応、また座標入力のキャンセル関数を設けた
-// 2021/06/23 複数のレイヤーでツールが起動されたとき、処理が破綻したのをひとまず回避（まだ不完全かも。特に状態を保持するline/polygon系）
-//
-// ESM fork  SVGMapLv0.2_Authoring_r7_
-// 2023/06/06 polylineの操作性向上。polygonも最初の一点可視化
-// 2023/06/14 Rev8: バッファ付きポイント・ライン・ポリゴンUI、6個のＵＩを統合したＵＩ(initGenericTool)
-// 2023/06/19 POIもoptionsで設定するように変更。 bufferedのvecrot-effectバグ修正、　いずれでもeditingStyle,shapeStyleを設定可能に（POIの場合はbuiffered時有効)
-// 2023/06/20 GenericTool周りのコードのブラッシュアップ、editingStyle,shapeStyleを設定可能に
-// 2023/08/10 フリーハンドツール実装
-//
+
 // ToDo,ISSUES:
 //  POI以外の描画オブジェクトを選択したときに出るイベントbase fwに欲しい
 //  編集UIを出した状態で、TypeError: svgImagesProps[layerId] is undefined[詳細]  SVGMapLv0.1_r14.js:3667:3

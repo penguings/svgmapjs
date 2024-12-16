@@ -20,13 +20,6 @@
 //  
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-// 
-// History:
-//  2021/04/01 Rev1完成かな
-//  2021/04/06 カスタムビューポート設定パネルを構築
-//  2021/07/14 同じオリジンに複数のコンテナがある場合に対応
-//  2021/07/19 カスタム設定保存機能
-//  2022/07/19 リファクタリング(ESM,class,windowMessaging)
 
 // ISSUE:
 //  FIXED: 同じオリジンに複数のコンテナがある場合、localStorageはオリジンで共通なので、コンテナのURLを相対パスで扱っているため矛盾が起きる・・

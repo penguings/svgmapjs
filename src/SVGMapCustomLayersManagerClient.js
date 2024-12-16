@@ -17,9 +17,6 @@
 //  
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-// 
-// History:
-// 2022/07/19- SVGMapウィンド側と、カスタムレイヤマネージャアプリ側のライブラリを切り分け
 
 import { InterWindowMessaging } from './InterWindowMessaging.js';
 

@@ -27,9 +27,6 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//
-// History:
-// 2024/07/23 1st implementatiion, to fix https://github.com/svgmap/svgmapjs/issues/5
 
 // Note: 
 // 将来、このイニシャライザーは、より高度・複雑な実装になる可能性がある。またWeb App Layerの作法もさらに変更される可能性もある

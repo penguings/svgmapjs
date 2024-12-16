@@ -22,35 +22,7 @@
 //  
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-// 
-// History:
-// 2016.12.02 コアにGeoJSONパース機能実装、それを用いたPolygon内のPoitns包含チェック初期実装
-// 2016.12.07 JSTS implementation
-// 2016.12.16 Totally Asynchronus Proecssing　ほぼ満足する機能が入ったと思われる。＞初期リリースとする
-// 2017.06.12 Geojsonの並びが逆(基本フレームワークも)だったのを修正のうえ、こちらも修正(getSVGcoord)、drawGeoJson(geoJson->SVG変換の上描画)の完成度を高め公開関数へ
-// 2018.01.04 Geojsonファイル内にプロパティが含まれている場合、埋め込むよう実装
-// 2018/06/21 Rev2 : ラスターGIS＝ビットイメージのimageをcanvasに読み込み、bitImage(画像処理)を用いたGIS機能～～　Web上で公開されている主題情報の多くがラスターなので・・
-// 2018/08/01 Add pointOnly option / get(Included/Excluded)Points
-// 2018.12.26 KMLを直接レンダリングする機能を実装
-// 2019/05/17 getInRangePoints(): Coverageがtransform付きのものをサポート
-// 2019/12/26 効率向上のためのオプション追加(getIncludedPointsのpreCapturedGeometry)
-// 2020/01/14 buildDifference()
-// 2020/01/30 ラスターGISの高速化に着手：getImagePixData 自ドメイン経由のビットイメージの場合、画面に表示しているimgリソースをそのまま画像処理用として利用する。　これをより有効にするため、コアモジュールもbitimageをproxy経由で取得させる機能を実装している(svgMap.setProxyURLFactory)
-// 2020/02/14 ラスターGISの高速化・大分完成 残るはcrossorigin anonymousをどうするか
-// 2020/02/17 ラスターGISの高速化。多分これで完成しました (naturalWidth/Height, crossorigin拡張 on BaseFW)
-// 2020/07/08 ラスターGIS: Polyline実装
-// 2020/07/10 ラスターGIS: Plygon実装  - これでRev3の重要機能完成
-// 2020/07/15 ラスターGIS(Polygon)結果のビットイメージ可視化用関数　＆　コード整理
-// 2020/07/27 Rev3 : ラスターGIS: 非対角成分あるラスターカバレッジでもPolyline,Polygonサポート
-// 2021/04/13 drawGeoJson: geoJsonのスタイリング仕様(mapbox)をサポート
-// 2021/10/27 ラスターGISの画像キャッシュの明示的なOn/Offを可能に
-// 2022/03/xx geoJsonのレンダラのバグ修正・高速化
-// 2022/04/xx Proxy処理をリファクタリング(メインのFW側および切り出したcorsProxy.js側で処理するように)
-// 2022/10/21 ラスターGIS: filterをサポート
-// 2023/05/11 getBufferedPolygon
-// 2023/11/06 buildIntersection / VectorGIS の高度化 (options.uniteSource1/2,areaCompare)
-// 2023/11/20 ベクタ図形をラスタ化した後にラスタGISをかけるパターンに対応 (imageIID=="layerCanvasImage" 苦しいパッチでサイドエフェクトあり得るかもなので、あとで直すかも?)
-//
+
 // ISSUES:
 //
 // --- これらはFixedとなったかな？

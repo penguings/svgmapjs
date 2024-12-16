@@ -18,14 +18,7 @@
 //  
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-// 
-// History:
-// 2018/02/08 Start coding
-// 2018/02/16 レイヤによって色を変化させる
-// 2018/02/28 Rev2: POIのバーグラフ化、ビットイメージレイヤー
-// 2018/06/25 Rev3: クロージャ化 , 名称変更: svgMapCesiumWrapper
-// 2022/08/04-開発中 Rec4: ESM化、window間連携のメッセージ化
-//
+
 // ToDo,ISSUES:
 // 伸縮スクロールに対する同期表示
 // cesium上でクリックしたオブジェクトのプロパティをSVGMap.js側のUIで表示

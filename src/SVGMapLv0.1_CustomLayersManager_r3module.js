@@ -19,15 +19,6 @@
 //  
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-// 
-// History:
-//  2021/02/10 大まかな外観ができつつあるところかな
-//  2021/03/10 ようやく初期的な動作が確認できた　ただしまだたくさん課題がある
-//  2021/04/01 Rev1: 完成かな
-//  2021/07/14 同じドメインに複数のルートコンテナがあるケースに対応
-//  2021/07/21 Rev2: レイヤー名(title)が同じで、グループ名(class)だけ異なるレイヤーを異なるレイヤーとして扱う機構
-//  2021/07/26 いろいろバグが取れて多分ちゃんとしたと思います。
-//  2022/07/19 リファクタリング(ESM,class,windowMessaging)
 
 // TBDs/ISSUEs
 //  DONE: 複数のセッティングを使えるように
