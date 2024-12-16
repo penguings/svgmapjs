@@ -164,17 +164,7 @@ class SvgMap {
 		this.#mapViewerProps=new MapViewerProps()
 		var that = this;
 		console.log("init");
-		UtilFuncs.addEvent(window,"load",function(){
-			that.#initLoad();
-		}.bind(this));
-		UtilFuncs.addEvent(window,"hashchange",function(){
-			// that.#resumeManager.resumeFirstTime = true; // 2024/5/2 ハッシュの変化でresumeの挙動を変えるのはおかしいと思われるのでコメントアウト
-			that.#refreshScreen();
-			if ( typeof this.#updateLayerListUIint == "function" ){ // レイヤリストUIが不整合起こす場合がある(レイヤをon/of指示するケース)。さらにそれに連動してUI自動起動も起きない
-				setTimeout(function(){this.#updateLayerListUIint()}.bind(this),300);
-			}
-		}.bind(this));
-		
+
 		this.#matUtil = new MatrixUtil();
 		this.#proxyManager = new ProxyManager();
 		this.#svgMapAuthoringTool = new SvgMapAuthoringTool(this, this.#mapViewerProps);
@@ -201,7 +191,21 @@ class SvgMap {
 		);
 		this.#linkedDocOp = new LinkedDocOp(this); 
 		this.#svgStyle = new SvgStyle(UtilFuncs.getNonScalingOffset);
-		
+
+		if (document.readyState === 'complete') {
+      that.#initLoad();
+		} else {
+			UtilFuncs.addEvent(window,"load",function(){
+				that.#initLoad();
+			}.bind(this));
+		}
+		UtilFuncs.addEvent(window,"hashchange",function(){
+			// that.#resumeManager.resumeFirstTime = true; // 2024/5/2 ハッシュの変化でresumeの挙動を変えるのはおかしいと思われるのでコメントアウト
+			that.#refreshScreen();
+			if ( typeof this.#updateLayerListUIint == "function" ){ // レイヤリストUIが不整合起こす場合がある(レイヤをon/of指示するケース)。さらにそれに連動してUI自動起動も起きない
+				setTimeout(function(){this.#updateLayerListUIint()}.bind(this),300);
+			}
+		}.bind(this));
 	}
 
 	async #initLoad(){
