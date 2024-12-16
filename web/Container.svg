@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:go="http://purl.org/svgmap/profile" viewBox="123 -46 22 22" >
+
+<globalCoordinateSystem srsName="http://purl.org/crs/84" transform="matrix(1.0,0.0,0.0,-1.0,0.0,0.0)" />
+
+<!-- Basemap Layers -->
+<animation x="-300" y="-300" width="600" height="600" xlink:href="./layers/basemaps/dynamicOSM_r11.svg" title="OpenStreetMap(Global)" class="basemap switch" visibility="visible"/>
+
+<!-- vectorEtcData -->
+<animation x="-30000" y="-30000" width="60000" height="60000" xlink:href="./layers/appLayers/moj/kuwanauchi.svg" title="登記所備付地図データ(RawData)" class="vectorEtcData clickable" visibility="hidden" opacity="0.7" />
+<animation x="-30000" y="-30000" width="60000" height="60000" xlink:href="./layers/appLayers/gsiVmExp/gsiVmExp.svg" title="Experimental GSI Vector Tile" class="vectorEtcData" visibility="hidden"/>
+
+<!-- 災害情報系 -->
+<animation x="-30000" y="-30000" width="60000" height="60000" xlink:href="./layers/appLayers/jma/pastOldNowCast/jmaHrRain_r3.svg" title="JMA過去の災害記録" class="災害" visibility="hidden" opacity="0.6"/>
+<animation x="-30000" y="-30000" width="60000" height="60000" xlink:href="./layers/appLayers/jma/pastDisaster/jma_bm_r2.svg#type=1&amp;cat=0&amp;autoupdate&amp;zmax=11" title="JMA過去の災害記録(2021-)" class="災害" visibility="hidden" opacity="0.6"/>
+<animation x="-30000" y="-30000" width="60000" height="60000" xlink:href="./layers/appLayers/droneBird/droneBird.svg" title="DRONEBIRD" class="災害" visibility="hidden" opacity="0.7"/>
+
+<!-- インフラ情報 -->
+<animation x="-30000" y="-30000" width="60000" height="60000" xlink:href="./layers/appLayers/openinframap/openinframap.svg" title="Open Infrastructure Map" class="インフラ情報 clickable" visibility="hidden"/>
+
+<!-- ハザードマップ -->
+<animation x="-30000" y="-30000" width="60000" height="60000" xlink:href="./layers/appLayers/bosaiKakenJSHIS/dynamicPCtile.svg#server=https%3A%2F%2Fwww.j-shis.bosai.go.jp%2Fmapcache%2FA%2Fwmts%3Flayer%3DA-V8-MAP-AVR-TTL_MTTL-A0500_SI2%26style%3Ddefault%26tilematrixset%3DWGS84%26Service%3DWMTS%26Request%3DGetTile%26Version%3D1.0.0%26Format%3Dimage%252Fpng%26TileMatrix%3D%5B%5Blevel%5D%5D%26TileCol%3D%5B%5Bx%5D%5D%26TileRow%3D%5B%5By%5D%5D&amp;comment=出典:防災科研J-SHIS&amp;link=https://www.j-shis.bosai.go.jp/&amp;legend=https://www.j-shis.bosai.go.jp/JSHIS2/IMAGE/etc/P-Y2020-SI.png" title="防災科研_J_SHIS_長期間平均ハザード(再現期間500年)" class="ハザードマップ" visibility="hidden" opacity="0.7"/>
+<animation x="-30000" y="-30000" width="60000" height="60000" xlink:href="./layers/appLayers/bosaiKakenJSHIS/dynamicPCtile.svg#server=https://www.j-shis.bosai.go.jp/mapcache/P-Y2020/wmts?layer%3DP-Y2020-MAP-AVR-TTL_MTTL-T30_I55_PD2%26style%3Ddefault%26tilematrixset%3DWGS84%26Service%3DWMTS%26Request%3DGetTile%26Version%3D1.0.0%26Format%3Dimage%252Fpng%26TileMatrix%3D%5B%5Blevel%5D%5D%26TileCol%3D%5B%5Bx%5D%5D%26TileRow%3D%5B%5By%5D%5D&amp;comment=出典:防災科研J-SHIS&amp;link=https://www.j-shis.bosai.go.jp/&amp;legend=https://www.j-shis.bosai.go.jp/JSHIS2/IMAGE/etc/P-Y2020-PD.png" title="防災科研_J_SHIS_確率論的地震動予測地図2020_主要活断層帯" class="ハザードマップ" visibility="hidden" opacity="0.7"/>
+
+<!-- 国土地理院 -->
+<animation x="-30000" y="-30000" width="60000" height="60000" xlink:href="./layers/appLayers/gsiTiles/gsiTilesListLayer.svg" title="地理院タイル：サブレイヤーあり" class="国土地理院 clickable" visibility="hidden" opacity="0.6"/>
+
+<!-- 地震火山レイヤー群 -->
+<animation class="地震・火山 clickable" title="津波情報(JMA)" xlink:href="./layers/appLayers/jma/tsunami/tsunami.svg" x="-30000" y="-30000" width="60000" height="60000" visibility="hidden" opacity="0.7"/> 
+
+<!-- 気象レイヤー群 -->
+<animation class="気象" title="GPV降雨予報(MSM)" xlink:href="./layers/appLayers/niiDigitalArchives2011/dynamicWebTile.svg#globe&amp;baseURL=none&amp;zmax=11" data-controller="gpv_msm_rain.html#exec=appearOnLayerLoad&amp;requiredWidth=400" x="-30000" y="-30000" width="60000" height="60000" visibility="hidden" opacity="0.4"/>
+<animation class="気象" title="GPV風予報 [Animated-α版]" xlink:href="./layers/appLayers/windy/windy.svg" x="-30000" y="-30000" width="60000" height="60000" visibility="hidden" opacity="0.5"/>
+<animation x="-30000" y="-30000" width="60000" height="60000" xlink:href="./layers/appLayers/niiDigitalTyphoon/wind.svg" title="GPV風予報" class="気象" visibility="hidden" opacity="0.7" /> 
+<animation title="気象警報" xlink:href="./layers/appLayers/niiDigitalTyphoon/warning/warning.svg" class="気象 clickable" x="-30000" y="-30000" width="60000" height="60000" opacity="0.7" visibility="hidden"/>
+<animation title="JTWC 台風情報(Joint Typhoon Warning Center)" xlink:href="./layers/appLayers/niiDigitalTyphoon/jtwcN.svg" class="気象" x="-30000" y="-30000" width="60000" height="60000" opacity="0.7" visibility="hidden"/>
+<animation title="JTWC KML 台風情報" xlink:href="./layers/appLayers/niiDigitalTyphoon/jtwc_KML.svg" class="気象 clickable" x="-30000" y="-30000" width="60000" height="60000" opacity="0.6" visibility="hidden"/>
+<animation class="気象 clickable" title="早期注意情報(JMA)" xlink:href="./layers/appLayers/jma/warnings/probability.svg" x="-30000" y="-30000" width="60000" height="60000" visibility="hidden" opacity="0.5"/> 
+<animation class="気象" title="台風(JMA)" xlink:href="./layers/appLayers/jma/jma_typhoon.svg" x="-30000" y="-30000" width="60000" height="60000" visibility="hidden" opacity="0.65"/> 
+<animation class="気象" title="浸水害危険度分布(JMA)" xlink:href="./layers/appLayers/jma/jma_bm_r2.svg#type=1&amp;cat=4&amp;autoupdate&amp;zmax=11&amp;noforecast" x="-30000" y="-30000" width="60000" height="60000" visibility="hidden" opacity="0.65"/> 
+<animation class="気象" title="土砂災害警戒判定メッシュ(JMA)" xlink:href="./layers/appLayers/jma/jma_bm_r2.svg#type=1&amp;cat=3&amp;autoupdate&amp;zmax=11&amp;noforecast" x="-30000" y="-30000" width="60000" height="60000" visibility="hidden" opacity="0.65"/> 
+
+<!-- ISSUE ちゃんと表示されないバグがある　多分時間間隔の問題 -->
+<animation class="気象" title="降水短時間予報(JMA)" xlink:href="./layers/appLayers/jma/jma_bm_r2.svg#type=1&amp;cat=6&amp;autoupdate&amp;zmax=11&amp;noforecast" x="-30000" y="-30000" width="60000" height="60000" visibility="hidden" opacity="0.65"/> 
+<animation x="-30000" y="-30000" width="60000" height="60000" xlink:href="./layers/appLayers/jma/kikendo/kikendo.svg" title="大雨危険度(JMA)" class="気象 clickable" visibility="hidden" opacity="0.65"/>
+<animation class="気象" title="危険度分布-土砂災害(JMA)" xlink:href="./layers/appLayers/jma/jma_bm_r2.svg#type=1&amp;cat=3&amp;autoupdate&amp;zmax=11&amp;noforecast" x="-30000" y="-30000" width="60000" height="60000" visibility="hidden" opacity="0.65"/> 
+<animation class="気象" title="危険度分布-洪水害(JMA)" xlink:href="./layers/appLayers/jma/jma_vm.svg#cat=2&amp;autoupdate&amp;noforecast" x="-30000" y="-30000" width="60000" height="60000" visibility="hidden" opacity="0.65"/> 
+<animation class="気象" title="ナウキャスト(降雨)(JMA)" xlink:href="./layers/appLayers/jma/jma_bm_r2.svg#type=1&amp;cat=0&amp;autoupdate&amp;zmax=11&amp;noforecast" x="-30000" y="-30000" width="60000" height="60000" visibility="hidden" opacity="0.65"/> 
+<animation class="気象" title="ナウキャスト(降雪)(JMA)" xlink:href="./layers/appLayers/jma/jma_bm_r2.svg#type=1&amp;cat=10&amp;autoupdate&amp;zmax=11&amp;noforecast" x="-30000" y="-30000" width="60000" height="60000" visibility="hidden" opacity="0.65"/> 
+<animation class="気象" title="ナウキャスト(落雷)(JMA)" xlink:href="./layers/appLayers/jma/jma_bm_r2.svg#type=1&amp;cat=1&amp;autoupdate&amp;zmax=11&amp;noforecast" x="-30000" y="-30000" width="60000" height="60000" visibility="hidden" opacity="0.65"/> 
+<animation class="気象" title="ナウキャスト(竜巻)(JMA)" xlink:href="./layers/appLayers/jma/jma_bm_r2.svg#type=1&amp;cat=2&amp;autoupdate&amp;zmax=11&amp;noforecast" x="-30000" y="-30000" width="60000" height="60000" visibility="hidden" opacity="0.65"/> 
+
+</svg>
