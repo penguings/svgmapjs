@@ -1,10 +1,23 @@
 <!DOCTYPE html>
-<html>
-<title>SVGMap - Demo</title>
-<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0" />
-<meta charset="UTF-8">
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<html lang="ja">
+<head>
+    <title>SVGMap - Demo</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <meta charset="UTF-8">
+</head>
+<script type="text/javascript" src="https://unpkg.com/jsts@1.6.1/dist/jsts.min.js"></script>
+<script type="module">
+    import { SvgMap } from '../src/SVGMapLv0.1_Class_r18module.js';
+    window.svgMap = new SvgMap();
 
+    // TODO: 以下のプロキシの設定は、必要に応じて変更してください。
+    // import { CorsProxy } from '../src/CorsProxyModule.js';
+    // var corsProxy = new CorsProxy();
+    // var proxyPath = ""; // CORS anywhere
+    // corsProxy.setService(proxyPath, null, true, false);
+    // window.corsProxy = corsProxy;
+    // svgMap.setProxyURLFactory(null, null, null, corsProxy.getURLfunction(), true);
+</script>
 <style>
     body {
         font-family: Meiryo;
@@ -89,22 +102,6 @@
         filter: grayscale(100%) sepia(100%) hue-rotate(300deg) brightness(60%) saturate(720%);
     }
 </style>
-
-<!-- SVGMapのコアAPIの読み込み -->
-<script type="text/javascript" src="https://unpkg.com/jsts@1.6.1/dist/jsts.min.js"></script>
-<script type="module">
-    import { SvgMap } from '../src/SVGMapLv0.1_Class_r18module.js';
-    window.svgMap = new SvgMap();
-
-    // TODO: 以下のプロキシの設定は、必要に応じて変更してください。
-    // import { CorsProxy } from '../src/CorsProxyModule.js';
-    // var corsProxy = new CorsProxy();
-    // var proxyPath = ""; // CORS anywhere
-    // corsProxy.setService(proxyPath, null, true, false);
-    // window.corsProxy = corsProxy;
-    // svgMap.setProxyURLFactory(null, null, null, corsProxy.getURLfunction(), true);
-</script>
-
 <body>
     <div id="mapcanvas" data-src="Container.svg"></div>
     <div id="gui">
@@ -115,7 +112,7 @@
         <img id="copyPermaLink" onclick="svgMap.getBasicPermanentLink(true)" src="./imgs/permaLink.png"
             title="パーマリンクをクリックボードにコピーする" alt="permaLink" />
         <img id="centerSight" src="./imgs/Xcursor.png" width="15" height="15" alt="centerSight" />
-        <table>
+        <table id="centerPosTable">
             <tr>
                 <td>Lat,Lng:</td>
                 <td id="centerPos"></td>
