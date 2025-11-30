@@ -1,12 +1,14 @@
 {
 	"devDependencies": {
 		"@playwright/test": "^1.48.2",
-		"@types/node": "^22.8.6",
-		"playwright": "^1.48.2",
+		"@rollup/plugin-terser": "^0.4.4",
 		"@testing-library/dom": "^10.4.0",
+		"@types/node": "^22.8.6",
 		"jest": "^29.7.0",
 		"jest-environment-jsdom": "^29.7.0",
-		"jsts": "^2.12.1"
+		"jsts": "^2.12.1",
+		"playwright": "^1.48.2",
+		"rollup": "^4.53.3"
 	},
 	"name": "svgmaplv0.2",
 	"description": "Modular SVGMap.js alpha",
@@ -15,7 +17,8 @@
 	"scripts": {
 		"test": "NODE_OPTIONS=--experimental-vm-modules npx jest",
 		"report": "NODE_OPTIONS=--experimental-vm-modules npx jest --coverage",
-		"e2e": "npx playwright test"
+		"e2e": "npx playwright test",
+		"build": "rollup -c"
 	},
 	"repository": {
 		"type": "git",
