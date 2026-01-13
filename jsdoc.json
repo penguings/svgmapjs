@@ -1,0 +1,21 @@
+{
+	"source": {
+		"include": [
+			"SVGMapLv0.1_r18module.js",
+			"SVGMapLv0.1_Class_r18module.js",
+			"SVGMapLv0.1_GIS_r4_module.js",
+			"SVGMapLv0.1_LayerUI_r6module.js",
+			"SVGMapLv0.1_CustomLayersManager_r3module.js",
+			"svgMapLayerLib.js",
+			"libs"
+		],
+		"includePattern": ".+\\.js$",
+		"excludePattern": "(^|\\/|\\\\)(dist|node_modules|tests)(\\/|\\\\)|SVGMapSerializer_obsoluted\\.js$"
+	},
+	"opts": {
+		"destination": "docs/api",
+		"encoding": "utf8",
+		"recurse": true,
+		"readme": "README.md"
+	}
+}

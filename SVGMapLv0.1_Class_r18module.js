@@ -2759,7 +2759,7 @@ class SvgMap {
 	}
 	/**
 	 *
-	 * @returns {{timeoutBitImagesCount?: number, timeoutSvgDocCount?: number, otherBitImagesCount?: number, otherSvgDocCount?: number}}
+	 * @returns {{timeoutBitImagesCount: (number|undefined), timeoutSvgDocCount: (number|undefined), otherBitImagesCount: (number|undefined), otherSvgDocCount: (number|undefined)}}
 	 * 		現在のエラー統計を格納したオブジェクト。`#clearLoadErrorStatistics()`未実行の場合は空オブジェクトを返す
 	 */
 	getLoadErrorStatistics(...params) {
@@ -2827,7 +2827,7 @@ class SvgMap {
 	}
 	/**
 	 * @description  コンテナsvgに設定されているCRSの逆変換行列( svg座標から地理座標へ変換する行列 )を取得
-	 * @returns
+	 * @returns {*} CRSの逆変換行列（実装依存）
 	 */
 	getRoot2Geo() {
 		return this.#mapViewerProps.root2Geo;
@@ -3315,7 +3315,7 @@ class SvgMap {
 	/**
 	 * ズームイン／アウト後のタイル読み込み開始タイマー
 	 * @param  {String} zoomInterval // msec
-	 * @returns
+	 * @returns {*} 設定結果（実装依存）
 	 */
 	setSmoothZoomInterval(...params) {
 		return this.#zoomPanManager.setSmoothZoomInterval(...params);
@@ -3388,7 +3388,7 @@ class SvgMap {
 	 * @param {Object} mat 2x2の変換行列
 	 * @param {Boolean} calcSize （用途不明）
 	 * @param {Object} nonScaling 2x1の行列（用途不明）
-	 * @returns
+	 * @returns {*} 変換結果（実装依存）
 	 */
 	transform(...params) {
 		return this.#matUtil.transform(...params);

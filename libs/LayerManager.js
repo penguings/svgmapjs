@@ -30,7 +30,7 @@ class LayerManager {
 	/**
 	 *
 	 * @param {String} layerID_Numb_Title
-	 * @returns
+	 * @returns {(Element|null)} レイヤ要素。見つからない場合は null
 	 */
 	getLayer(layerID_Numb_Title) {
 		var layer = null;
@@ -445,7 +445,7 @@ class LayerManager {
 	 * @param {String} hashOption //queryStringとしてURLに付与されるようです。
 	 * @param {Boolean} removeLayer //子要素を削除するオプション
 	 * @param {String} execOption // レイヤwebAppがある場合の実行オプション( appearOnLayerLoad||hiddenOnLayerLoad||onClick )
-	 * @returns
+	 * @returns {boolean} 変化があるとtrue、ない/不合理の場合はfalse
 	 */
 	setRootLayersProps(
 		layerID_Numb_Title,

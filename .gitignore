@@ -6,3 +6,6 @@ package-lock.json
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# Generated documentation output (published via GitHub Pages)
+/docs/api/
