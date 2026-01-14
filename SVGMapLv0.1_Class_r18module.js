@@ -235,13 +235,7 @@
 
 "use strict"; // 2022/05/06 Strictに移行します
 
-import { SvgMapLayerUI } from "./SVGMapLv0.1_LayerUI_r6module.js";
-import { SvgMapAuthoringTool } from "./SVGMapLv0.1_Authoring_r8_module.js";
-import { SvgMapCustomLayersManager } from "./SVGMapLv0.1_CustomLayersManager_r3module.js";
-import { SvgMapCesiumWrapper } from "./3D_extension/SVGMapLv0.1_CesiumWrapper_r4module.js";
-
 // coreJsの部品群
-import { LayerSpecificWebAppHandler } from "./libs/LayerSpecificWebAppHandler.js";
 import { MatrixUtil, Mercator } from "./libs/TransformLib.js";
 import { ZoomPanManager } from "./libs/ZoomPanManager.js";
 import { UAtester } from "./libs/UAtester.js";
@@ -318,7 +312,13 @@ class SvgMap {
 	#essentialUIs;
 	#resourceLoadingObserver;
 
-	constructor() {
+	// Plugins / extensions (public plugin API)
+	#installedPlugins = new Map();
+	#extensions = Object.create(null);
+	#initLoadHooks = [];
+	#pendingRootLayersDefinition = null;
+
+	constructor(options = {}) {
 		this.#mapViewerProps = new MapViewerProps();
 		var that = this;
 		console.log("init");
@@ -349,25 +349,11 @@ class SvgMap {
 
 		this.#matUtil = new MatrixUtil();
 		this.#proxyManager = new ProxyManager();
-		this.#svgMapAuthoringTool = new SvgMapAuthoringTool(
-			this,
-			this.#mapViewerProps,
-		);
-		this.#layerSpecificWebAppHandler = new LayerSpecificWebAppHandler(
-			this,
-			this.#svgMapAuthoringTool,
-			this.#getLayerStatus,
-		);
-		this.#svgMapLayerUI = new SvgMapLayerUI(
-			this,
-			this.#layerSpecificWebAppHandler,
-		);
-		this.#layerSpecificWebAppHandler.setLayerUIobject(this.#svgMapLayerUI);
-
-		this.#svgMapCustomLayersManager = new SvgMapCustomLayersManager(
-			this,
-			this.#svgMapLayerUI.getLayersCustomizer,
-		);
+		if (Array.isArray(options.plugins)) {
+			for (const plugin of options.plugins) {
+				this.use(plugin);
+			}
+		}
 		this.#resourceLoadingObserver = new ResourceLoadingObserver(
 			this.#mapViewerProps,
 			this.#svgImagesProps,
@@ -392,7 +378,7 @@ class SvgMap {
 		); // 照準があるときは、Ticker機能をONにする 2013/1/11
 		this.#customModal = new CustomModal(this.#mapTicker);
 
-		this.#svgMapCesiumWrapper = new SvgMapCesiumWrapper(this);
+		// Cesium wrapper is installed by default plugin.
 		this.#geometryCapturer = new GeometryCapture(this, UtilFuncs.getImageURL);
 		this.#pathRenderer = new PathRenderer(
 			this.#geometryCapturer,
@@ -435,8 +421,95 @@ class SvgMap {
 		this.#svgStyle = new SvgStyle(UtilFuncs.getNonScalingOffset);
 	}
 
+	#normalizePlugin(plugin) {
+		if (typeof plugin === "function") {
+			return {
+				name: plugin.name || "anonymous-plugin",
+				install: plugin,
+			};
+		}
+		return plugin;
+	}
+
+	#createPluginApi(pluginName) {
+		return {
+			name: pluginName,
+			core: {
+				mapViewerProps: this.#mapViewerProps,
+				matUtil: this.#matUtil,
+				proxyManager: this.#proxyManager,
+			},
+			getLayerStatus: this.#getLayerStatus,
+			setExtension: (key, value) => {
+				this.#extensions[key] = value;
+				return value;
+			},
+			getExtension: (key) => {
+				return this.#extensions[key];
+			},
+			setAuthoringTool: (instance) => {
+				this.#svgMapAuthoringTool = instance;
+				return instance;
+			},
+			setLayerSpecificWebAppHandler: (instance) => {
+				this.#layerSpecificWebAppHandler = instance;
+				if (this.#svgMapLayerUI) {
+					this.#layerSpecificWebAppHandler.setLayerUIobject(
+						this.#svgMapLayerUI,
+					);
+				}
+				return instance;
+			},
+			setLayerUI: (instance) => {
+				this.#svgMapLayerUI = instance;
+				if (this.#layerSpecificWebAppHandler) {
+					this.#layerSpecificWebAppHandler.setLayerUIobject(instance);
+				}
+				return instance;
+			},
+			setCustomLayersManager: (instance) => {
+				this.#svgMapCustomLayersManager = instance;
+				return instance;
+			},
+			setCesiumWrapper: (instance) => {
+				this.#svgMapCesiumWrapper = instance;
+				return instance;
+			},
+			onInitLoad: (fn) => {
+				if (typeof fn === "function") {
+					this.#initLoadHooks.push(fn);
+				}
+			},
+		};
+	}
+
+	use(plugin, options = {}) {
+		const normalized = this.#normalizePlugin(plugin);
+		if (!normalized || typeof normalized.install !== "function") {
+			throw new TypeError("SvgMap.use(plugin): plugin.install が必要です");
+		}
+		const pluginName = normalized.name || "anonymous-plugin";
+		if (this.#installedPlugins.has(pluginName)) {
+			return this;
+		}
+		const api = this.#createPluginApi(pluginName);
+		normalized.install(this, options, api);
+		this.#installedPlugins.set(pluginName, normalized);
+		if (typeof normalized.onInitLoad === "function") {
+			api.onInitLoad(normalized.onInitLoad.bind(normalized));
+		}
+		return this;
+	}
+
 	async #initLoad() {
 		// load時に"一回だけ"呼ばれる 2024/8/6 async化
+		for (const hook of this.#initLoadHooks) {
+			try {
+				hook(this);
+			} catch (e) {
+				console.warn("SvgMap plugin initLoad hook failed:", e);
+			}
+		}
 
 		if (this.#mapViewerProps.hasUaProps()) {
 			console.log("Already initialized. Exit...");
@@ -462,7 +535,7 @@ class SvgMap {
 		);
 
 		var rootSVGpath = this.#essentialUIs.initMapCanvas();
-		if (!rootSVGpath) {
+		if (rootSVGpath == null) {
 			return;
 		}
 
@@ -802,6 +875,13 @@ class SvgMap {
 		if (!docId && !parentElem) {
 			docId = "root";
 			parentElem = this.#mapViewerProps.mapCanvas;
+		}
+		if (docId == "root" && this.#pendingRootLayersDefinition) {
+			try {
+				this.#applyRootLayersDefinition(this.#pendingRootLayersDefinition);
+			} finally {
+				this.#pendingRootLayersDefinition = null;
+			}
 		}
 		var svgDoc = this.#svgImages[docId];
 		svgDoc.documentElement.setAttribute("about", docId);
@@ -3292,6 +3372,161 @@ class SvgMap {
 	 */
 	setRootLayersProps(...params) {
 		return this.#layerManager.setRootLayersProps(...params);
+	}
+
+	#normalizeRootLayersDefinition(layers) {
+		if (!Array.isArray(layers)) {
+			throw new TypeError("setRootLayersDefinition(layers): layers は配列が必要です");
+		}
+		return layers.map((layer, index) => {
+			if (!layer || typeof layer !== "object") {
+				throw new TypeError(
+					"setRootLayersDefinition(layers): layers[" +
+						index +
+						"] はオブジェクトが必要です",
+				);
+			}
+			const href = layer.href || layer.src || layer.url;
+			if (!href || typeof href !== "string") {
+				throw new TypeError(
+					"setRootLayersDefinition(layers): layers[" +
+						index +
+						"].href が必要です",
+				);
+			}
+			const id = typeof layer.id === "string" ? layer.id : null;
+			const title = typeof layer.title === "string" ? layer.title : "";
+			const className =
+				typeof layer.className === "string"
+					? layer.className
+					: typeof layer.class === "string"
+						? layer.class
+						: "";
+			const visible =
+				layer.visible == null ? true : Boolean(layer.visible);
+			return {
+				id,
+				title,
+				href,
+				className,
+				visible,
+			};
+		});
+	}
+
+	#applyRootLayersDefinition(layers) {
+		if (!this.#svgImages["root"] || !this.#svgImagesProps["root"]) {
+			this.#pendingRootLayersDefinition = layers;
+			return;
+		}
+		const rootDoc = this.#svgImages["root"];
+		const rootElem = rootDoc.documentElement;
+		if (!rootElem) {
+			this.#pendingRootLayersDefinition = layers;
+			return;
+		}
+
+		const isSVG2 = Boolean(this.#svgImagesProps["root"].isSVG2);
+		const layerTags = isSVG2 ? ["iframe"] : ["animation"];
+		const children = Array.from(rootElem.children || []);
+		const existingLayerElems = children.filter((child) => {
+			const tagName = (child.tagName || "").toLowerCase();
+			return layerTags.includes(tagName);
+		});
+		for (const elem of existingLayerElems) {
+			const imageId = elem.getAttribute("iid");
+			if (imageId) {
+				this.#removeChildDocs(imageId);
+			}
+			if (elem.parentElement) {
+				elem.parentElement.removeChild(elem);
+			}
+		}
+
+		const usedIds = new Set();
+		for (const child of children) {
+			const imageId = child.getAttribute && child.getAttribute("iid");
+			if (imageId) {
+				usedIds.add(imageId);
+			}
+		}
+
+		for (let index = 0; index < layers.length; index++) {
+			const layer = layers[index];
+			let imageId = layer.id;
+			if (imageId && imageId.indexOf("i") !== 0) {
+				imageId = "i" + imageId;
+			}
+			if (!imageId || usedIds.has(imageId)) {
+				imageId = "i" + "layer" + String(index + 1);
+				while (usedIds.has(imageId)) {
+					imageId = imageId + "_";
+				}
+			}
+			usedIds.add(imageId);
+
+			const layerElem = rootDoc.createElementNS(
+				"http://www.w3.org/2000/svg",
+				isSVG2 ? "iframe" : "animation",
+			);
+			layerElem.setAttribute("iid", imageId);
+			if (layer.title) {
+				layerElem.setAttribute("title", layer.title);
+			}
+			if (layer.className) {
+				layerElem.setAttribute("class", layer.className);
+			}
+			layerElem.setAttribute(
+				"visibility",
+				layer.visible ? "visible" : "hidden",
+			);
+
+			let href = layer.href;
+			if (isSVG2) {
+				if (href.indexOf("#") === -1) {
+					href = href + "#globe";
+				}
+				layerElem.setAttribute("src", href);
+				layerElem.setAttribute(
+					"clip",
+					"rect(-30000,-30000,60000,60000)",
+				);
+				layerElem.setAttribute("postpone", "true");
+			} else {
+				layerElem.setAttribute("x", "-30000");
+				layerElem.setAttribute("y", "-30000");
+				layerElem.setAttribute("width", "60000");
+				layerElem.setAttribute("height", "60000");
+				layerElem.setAttributeNS(
+					"http://www.w3.org/1999/xlink",
+					"xlink:href",
+					href,
+				);
+			}
+
+			rootElem.appendChild(layerElem);
+		}
+
+		this.#layerManager.setRootLayersPropsPostprocessed.processed = false;
+	}
+
+	/**
+	 * ルートコンテナSVGのレイヤー一覧(<animation> / <iframe>)を、JS側の定義で置き換えます。
+	 * - root SVGがまだロードされていない場合は、ロード後に自動適用されます。
+	 * - 適用後は refreshScreen() が必要です（このメソッドは自動で呼びます）。
+	 *
+	 * @param {Array<Object>} layers
+	 *   `[{ href, title, id, className, visible }, ...]` の配列。
+	 * @returns {undefined}
+	 */
+	setRootLayersDefinition(layers) {
+		const normalized = this.#normalizeRootLayersDefinition(layers);
+		if (!this.#svgImages["root"]) {
+			this.#pendingRootLayersDefinition = normalized;
+			return;
+		}
+		this.#applyRootLayersDefinition(normalized);
+		this.#refreshScreen();
 	}
 
 	/**

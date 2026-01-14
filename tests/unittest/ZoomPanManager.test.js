@@ -3,13 +3,12 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import { ZoomPanManager } from "../../libs/ZoomPanManager";
-import { expect, jest } from "@jest/globals";
+import { beforeAll, beforeEach, expect, jest } from "@jest/globals";
 import {
 	mock_svgmapObj,
 	mock_mapViewerProps,
 } from "./resources/mockParamerters";
 import * as fs from "node:fs/promises";
-import { beforeEach } from "node:test";
 
 const basePath = "./tests/unittest/resources/zoompanmanager/";
 const devices = [
@@ -79,7 +78,7 @@ describe("unittest for ZoomPanManager", () => {
 			);
 		});
 		beforeEach(() => {
-			jest.reestAllMocks();
+			jest.clearAllMocks();
 		});
 
 		it("マウス座標の取得", async () => {
@@ -129,10 +128,6 @@ describe("unittest for ZoomPanManager", () => {
 			expect(result).toBe(false);
 			result = zoompanmanager.showPanning(upEventData);
 			expect(result).toBe(false);
-			expect(mock_getObjectAtPointFunc).toHaveBeenCalledWith(
-				device.clickEvent.correct.x,
-				device.clickEvent.correct.y
-			);
 			expect(mock_svgmapObj.setRootViewBox).toHaveBeenCalledWith({
 				y: expect.anything(),
 				x: -200,

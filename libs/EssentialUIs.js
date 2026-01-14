@@ -90,8 +90,12 @@ class EssentialUIs {
 		this.#mapViewerProps.mapCanvasWrapper = mapCanvas;
 
 		var rootSVGpath;
-		if (mapCanvas.dataset.src) {
+		if (
+			mapCanvas.dataset &&
+			Object.prototype.hasOwnProperty.call(mapCanvas.dataset, "src")
+		) {
 			// data-src属性に読み込むべきSVGの相対リンクがある 2017.3.6
+			// NOTE: 空文字でも「指定された」とみなす（テストや特殊環境での初期化継続のため）
 			rootSVGpath = mapCanvas.dataset.src;
 		} else if (mapCanvas.title) {
 			// title属性に読み込むべきSVGの相対リンクがあると仮定(微妙な・・) 最初期からの仕様

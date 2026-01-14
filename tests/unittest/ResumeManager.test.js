@@ -8,33 +8,23 @@ import { jest } from "@jest/globals";
 const urlPatterns = [
 	{
 		description: "pure url",
-		url: "http://hogehoge.com",
-		checkResume:
-			"http://hontohakotti.com/main.svg#xywh=global:0.000000,0.000000,0.000000,0.000000",
+		url: "/main.svg",
 	},
 	{
 		description: "url + a query parameter.",
-		url: "http://hogehoge.com?param=1",
-		checkResume:
-			"http://hontohakotti.com/main.svg#xywh=global:0.000000,0.000000,0.000000,0.000000",
+		url: "/main.svg?param=1",
 	},
 	{
 		description: "url + multi query parameters.",
-		url: "http://hogehoge.com?param=1&param2",
-		checkResume:
-			"http://hontohakotti.com/main.svg#xywh=global:0.000000,0.000000,0.000000,0.000000",
+		url: "/main.svg?param=1&param2",
 	},
 	{
 		description: "url + hash tag",
-		url: "http://hogehoge.com#param=1",
-		checkResume:
-			"http://hontohakotti.com/main.svg#xywh=global:0.000000,0.000000,0.000000,0.000000",
+		url: "/main.svg#param=1",
 	},
 	{
 		description: "url + hash tag(multi parameters)",
-		url: "http://hogehoge.com#param=1&param2",
-		checkResume:
-			"http://hontohakotti.com/main.svg#xywh=global:0.000000,0.000000,0.000000,0.000000",
+		url: "/main.svg#param=1&param2",
 	},
 ];
 
@@ -43,7 +33,7 @@ describe("target ResumeManager.", () => {
 		let resumemanager;
 
 		let mock_svgMapObject, mock_svgMapCustomLayersManager, mock_parseSVGfunc;
-		let mock_localstorage, mock_location;
+		let mock_localstorage;
 		beforeAll(() => {
 			mock_svgMapObject = {
 				getSvgImagesProps: jest.fn().mockReturnValue({
@@ -65,17 +55,7 @@ describe("target ResumeManager.", () => {
 			);
 		});
 		beforeEach(() => {
-			mock_location = jest.spyOn(global, "location", "get").mockReturnValue({
-				href: "http://kondokoso.com",
-				pathname: "/main.svg",
-				origin: "http://hontohakotti.com",
-			});
-		});
-		afterEach(() => {
-			if (mock_location != null) {
-				mock_location.mockClear();
-				mock_location.mockReset();
-			}
+			window.history.pushState({}, "", pattern.url);
 		});
 		// ブラウザにかかわるところは専用のクラスを用いると試験しやすい
 		it("check Resume", () => {
@@ -93,7 +73,10 @@ describe("target ResumeManager.", () => {
 
 		it("get PermanentLink", () => {
 			let result = resumemanager.getBasicPermanentLink(false);
-			expect(result.href).toEqual(pattern.checkResume);
+			const expected =
+				new URL(window.location.pathname, window.location.origin).href +
+				"#xywh=global:0.000000,0.000000,0.000000,0.000000";
+			expect(result.href).toEqual(expected);
 		});
 	});
 });

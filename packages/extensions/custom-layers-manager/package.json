@@ -1,0 +1,15 @@
+{
+	"name": "@penguings/svgmapjs-custom-layers-manager",
+	"version": "0.0.1",
+	"private": true,
+	"type": "module",
+	"description": "svgmapjs CustomLayersManager extension (work-in-progress)",
+	"dependencies": {
+		"@penguings/svgmapjs": "^0.0.1"
+	},
+	"exports": {
+		".": "./dist/index.js",
+		"./client": "./dist/client.js",
+		"./app": "./dist/app.js"
+	}
+}

@@ -63,6 +63,10 @@ const mock_mapViewerProps = {
 	mapCanvas: {
 		style: {},
 		getElementsByTagName: jest.fn().mockReturnValue([]),
+		querySelectorAll: jest.fn().mockReturnValue({
+			length: 0,
+			item: jest.fn().mockReturnValue(null),
+		}),
 	},
 	setRootViewBox: jest.fn(),
 };

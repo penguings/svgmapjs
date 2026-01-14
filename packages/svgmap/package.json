@@ -1,0 +1,10 @@
+{
+	"name": "@penguings/svgmapjs",
+	"version": "0.0.1",
+	"private": true,
+	"type": "module",
+	"description": "svgmapjs core (work-in-progress monorepo package)",
+	"exports": {
+		".": "./dist/index.js"
+	}
+}

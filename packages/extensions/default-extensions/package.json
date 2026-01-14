@@ -1,0 +1,18 @@
+{
+	"name": "@penguings/svgmapjs-default-extensions",
+	"version": "0.0.1",
+	"private": true,
+	"type": "module",
+	"description": "svgmapjs default extensions plugin (work-in-progress)",
+	"dependencies": {
+		"@penguings/svgmapjs": "^0.0.1",
+		"@penguings/svgmapjs-authoring": "^0.0.1",
+		"@penguings/svgmapjs-layer-ui": "^0.0.1",
+		"@penguings/svgmapjs-custom-layers-manager": "^0.0.1",
+		"@penguings/svgmapjs-layer-specific-webapp-handler": "^0.0.1",
+		"@penguings/svgmapjs-cesium": "^0.0.1"
+	},
+	"exports": {
+		".": "./dist/index.js"
+	}
+}

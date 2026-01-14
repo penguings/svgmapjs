@@ -30,6 +30,32 @@ Development has started in May 2022 as SVGMapLv0.1_r18module.js, and this versio
 
 [detailed information](https://www.svgmap.org/wiki/index.php?title=%E8%A7%A3%E8%AA%AC%E6%9B%B8#rev18_.28ECMA_Script_Module.E7.89.88.29.E3.81.AE.E4.BE.8B)
 
+## plugin-based initialization (this fork)
+
+This fork supports an explicit plugin API (`new SvgMap({ plugins: [...] })`).
+
+Example (npm workspace / this fork packages):
+
+```js
+import {
+  SvgMap,
+  SvgMapDefaultExtensionsPlugin,
+} from "@penguings/svgmapjs";
+
+const svgMap = new SvgMap({
+  plugins: [SvgMapDefaultExtensionsPlugin],
+});
+```
+
+It also provides a public API to define the root layer list from JavaScript:
+
+```js
+svgMap.setRootLayersDefinition([
+  { title: "Base", href: "base.svg#globe", visible: true },
+  { title: "Overlay", href: "overlay.svg#globe", visible: false },
+]);
+```
+
 ## documentation
 
 This fork publishes the latest API reference to GitHub Pages, generated from JSDoc.

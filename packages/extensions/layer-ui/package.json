@@ -1,0 +1,13 @@
+{
+	"name": "@penguings/svgmapjs-layer-ui",
+	"version": "0.0.1",
+	"private": true,
+	"type": "module",
+	"description": "svgmapjs LayerUI extension (work-in-progress)",
+	"dependencies": {
+		"@penguings/svgmapjs": "^0.0.1"
+	},
+	"exports": {
+		".": "./dist/index.js"
+	}
+}

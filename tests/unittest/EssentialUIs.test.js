@@ -42,8 +42,14 @@ describe("unittest for EssentialUIs", () => {
 		it("layerListのサイズを自動調整", () => {
 			essentialui.setLayerListSize();
 			let result = document.getElementById("layerList");
-			expect(result.getAttribute("style")).toBe(
-				"left: 30px; top: 10px; width: 300px; height: 90%; position: absolute;"
+			const normalizeStyle = (styleText) =>
+				String(styleText || "")
+					.replace(/\s+/g, "")
+					.replace(/;$/, "");
+			expect(normalizeStyle(result.getAttribute("style"))).toBe(
+				normalizeStyle(
+					"left: 30px; top: 10px; width: 300px; height: 90%; position: absolute;"
+				)
 			); // layerListのサイズを設定する関数
 		});
 

@@ -1,0 +1,13 @@
+{
+	"name": "@penguings/svgmapjs-cesium",
+	"version": "0.0.1",
+	"private": true,
+	"type": "module",
+	"description": "svgmapjs Cesium extension (work-in-progress)",
+	"dependencies": {
+		"@penguings/svgmapjs": "^0.0.1"
+	},
+	"exports": {
+		".": "./dist/index.js"
+	}
+}

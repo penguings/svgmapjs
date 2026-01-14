@@ -1,0 +1,14 @@
+{
+	"name": "@penguings/svgmapjs-authoring",
+	"version": "0.0.1",
+	"private": true,
+	"type": "module",
+	"description": "svgmapjs Authoring extension (work-in-progress)",
+	"dependencies": {
+		"@penguings/svgmapjs": "^0.0.1",
+		"@penguings/svgmapjs-gis": "^0.0.1"
+	},
+	"exports": {
+		".": "./dist/index.js"
+	}
+}
