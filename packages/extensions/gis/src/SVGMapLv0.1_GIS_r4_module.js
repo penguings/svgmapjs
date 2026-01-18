@@ -38,7 +38,41 @@ class SvgMapGIS {
 							geojs.coordinates.splice(i, 1);
 						}
 					}
-//
+				} else if (geojs.type == "Polygon") {
+					for (var i = geojs.coordinates.length - 1; i >= 0; i--) {
+						if (geojs.coordinates[i].length < 3) {
+							geojs.coordinates.splice(i, 1);
+						}
+					}
+				}
+				return this.#featureReader.read(geojs);
+			}.bind(this);
+			this.#getGeoJson = function (feature) {
+				return this.#featureWriter.write(feature);
+			}.bind(this);
+		}
+		//console.log("init svgmapgis",this.#jsts,this.#getGeoJson);
+		//	console.log(featureReader, featureWriter, getFeature, getGeoJson);
+
+		// http://stackoverflow.com/questions/22521982/js-check-if-point-inside-a-polygon
+	}
+
+	#inside(point, vs) {
+		// ray-casting algorithm based on
+		// http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
+
+		var x = point[0],
+			y = point[1];
+
+		var inside = false;
+		for (var i = 0, j = vs.length - 1; i < vs.length; j = i++) {
+			var xi = vs[i][0],
+				yi = vs[i][1];
+			var xj = vs[j][0],
+				yj = vs[j][1];
+
+			var intersect =
+				yi > y != yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
 
 			if (intersect) inside = !inside;
 		}
