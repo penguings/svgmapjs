@@ -92,7 +92,7 @@ class ResumeManager {
 					return false;
 				}
 			}
-			// ここで、rootContainerHref(metadataに入れる)とsettingRevisionの照合をすべき(TBD)
+            
 			console.log("setInitialCustomLayers Check OK!");
 			return true;
 		}
@@ -127,14 +127,14 @@ class ResumeManager {
 		} else if (checkSetting(initialCustomLayersObj)) {
 			//			console.log(rootSVGpath);
 			var rootURL = new URL(rootSVGpath, window.location.href);
-			this.#initialCustomLayers = {
+				this.#initialCustomLayers = {
 				currentSettingKey: "startup",
 				customLayersSettings: {
 					startup: initialCustomLayersObj,
 				},
-				settingRevision: "r2", // TBD ちゃんとチェックしたほうが良いと思う
-				rootContainerHref: rootURL.pathname, // TBD
-				host: rootURL.host, // TBD
+				settingRevision: "r2",
+				rootContainerHref: rootURL.pathname,
+				host: rootURL.host,
 			};
 			if (initialCustomLayersObj.metadata) {
 				if (initialCustomLayersObj.metadata.viewBox) {

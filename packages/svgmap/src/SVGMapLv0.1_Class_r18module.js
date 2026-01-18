@@ -7,230 +7,15 @@
 // Programmed by Satoru Takagi
 //
 // Contributors:
-//  kusariya
-//  MCsamurai034
 //
-// License: (MPL v2)
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at https://mozilla.org/MPL/2.0/.
-//
-// History:
-// 2012/04/16 : Start coding
-// 2012/04/17 : Dynamic Loading using AJAX
-// 2012/04/20 : 単階層のTiling and Layering実装完了
-// 多階層の実装を開始
-// 2012/04/20 : DOM基本関数でDOMトラバーサを実装し、image文の解釈を実施
-// 2012/04/20 : svgImagesの配列化に着手
-// 2012/04/23 : コンテナ⇒インポートSVG　構造への対応
-// 2012/04/24 : 多階層対応のため、グローバル変数除去＆再帰処理
-// まだ不完全か(完全に不要なsvgdomを消去し切れていない・・)
-// 2012/04/24 : 子SVG、親SVGでCRS matrixが異なるものに対応
-// 2012/04/24 : rootのみだがvisible(Min/Max)Zoomに対応(実際にはroot以外でもrootと同じgcstfなら正しく動く)　～～⇒要改善です
-// 2012/05/08 : IE8(winXP),IE9(win7)対応
-// 2012/05/09 : スマホ(Android,iPad等)対応(とりあえず)
-// 2012/06/12 : window resizeに対応
-// 2012/10/04 : POI機能(０次元Vector)の実装を開始(defs->image(id) , use(ref(svg)))タイプ
-// 2012/11/02 : ちょっと間が空いたが、POI基本機能実装完了　（IEでも動作）（ToDo:APIでPOIを導入する機能）
-// 2012/11/02 : visible(Min/Max)Zoomをroot以外でも正式に対応(したはず)
-// 2012/12/06 : jsを分離, viewBoxのパースバグフィックス
-// 2012/12/06 : metadataの機構を改良？ svg-propertyにスキーマ、poi(use)のcontentにデータを入れる(いずれもcsv)
-// 2012/12/07 : 中心座標を出すUIを追加
-// 2012/12/19 : Mobile Firefoxでそれなりに動くようになった
-// 2013/01/08 : レイヤー制御関数(ルートコンテナにある<animation>||<iframe>をレイヤーと認識する "title"属性を名称に)
-// 2013/01/10 : レイヤー制御機能(switch動作含) class="class名 switch"でそのclassの中でswitchする (初期状態では、いずれか1こ以外はvisibility="hidden"に)
-// 2013/01/11 : スマホでもPOIを触れるようにする機能(照準にPOIをあわせてTickerをタップする)
-// 2013/01/25 : Rev.10 : 動的なレイヤーのサポート
-// 2013/02/20 : 右クリックドラッグでズーム、スマホではマルチタッチズームに対応
-// 2013/06/18 : safari blackout対策
-// 2013/06/21 : Rev.11 : ズーム時のLevelOfDetail遷移時、未ロード段階でのホワイトアウトを抑制(上等なimgロード処理がかなりできた。が、タイムアウト処理(一部ルーチン用意)、消されるべきコンテンツが上に載ってしまっていて？読み込み中のコンテンツが隠されてしまう、スムース遷移表示をしたいなどの課題が未解決。かなりヘビーな改造で　影響大きい感じなので、リビジョンをひとつ上げることにした)
-// 2013/06/25 : タイムアウト処理、LOD遷移時の隠される問題他、r11のバグ・不具合を修正(rev.11)
-// 2013/06/27 : ようやくバグを消したかな
-// 2013/07/17 : Rev.12 : POIの入力機能の実装に着手　おそらくこれがLv0としてしてはラストのリビジョン（次版は一部ベクタ対応でlv02?）
-// 2013/07/31 : だいたいできたかなぁ～～
-// 2013/08/01 : バグ(遅延消去)対応。　html:img:id=svg:idに起因するバグは、そろそろ解消しないとまずそう
-// 2013/08/02 : r11レベルのIE8互換
-// ===== Level 0.1に移行(Level0.0 Rev12を継承) =====
-// 2013/08/08 : 1st test impl. 基本ロジックの実験を開始 rev1
-// 2013/08/21 : Pathの実装については、ほぼ安定・・・　IE9,FFでも動作
-// 2013/08/22 : ERR404等ファイル取得失敗時の例外処理
-// 2013/08/29 : Fragmen identifier
-// 2013/09/02 : Anchor
-// 2013/09/05 : Rev.2 Smooth zoom & wheel action
-// 2013/09/12 : Rev.3 Path塗りつぶし, canvasより下にclickable obj(POI)があると使えないことへの対応, 未使用canvasのパージ(少し高効率化)
-// 2013/12/05 : Rev.4 Path 要素のHITTEST : コンテナSVGのインポート部分('animation')で class="clickable"が宣言された文書（とそれが参照するすべての下位文書）のPathがクリック検索対象となる
-// 2013/12/11 : とりあえずIE11で丸めが起きないようにした
-// 2013/12/25 : Rev.5 タイリングを想定して、DOMを再帰的に編集する機能と、その編集をズームパン時にも持続させる機能(編集する機能自身は、ユーザ関数として任意実装（サンプル参照）)
-// 2014/01/31 : imageのhrefをDOM操作したときに、表示に反映される。　onload->addEventに変更。
-// 2014/02/07-: Rev.6: 開発を開始。svg2.0のiframe,postpone,globalview,zoom-media-queryのドラフトに対応させたい！
-// 2014/02/10 : globalView, iframeを（とりあえずの）解釈するようにした。ただし、postponeがデフォルトで変更不可
-// 2014/04/10 : add polygon,polyline,rect ( by converting to path! )
-// 2014/04/18 : add path-arc, circle   and  debug "style" attr parser
-// 2014/04/24 : animation,iframeのhrefを動的に書き換えたとき、動的な読み込みと表示の変化が起きるようにした。
-// 2014/04/25 : Rev.6.5: イベントリスナからon*を除去、多くの主要部をclick->mousedownに変更, IE(11)のAJAX APIのResponseTextで最近起こるようになった挙動に対策
-// 2014/04/30 : ellipse
-// 2014/05/27 : Rev.7: ルートのSVGのanimationをレイヤとみなし、そのレイヤ単位でcanvas2dを統合し、性能向上を図っている。ただし、ベクタ図形とビットイメージ（タイルやビットイメージPOI）との上下関係は崩れます(summarizeCanvas = true)
-// 2014/06/05 : span -> div, debug(htmlへのdiv追加前にloadSVGしているのがおかしい)
-// 2014/06/05 : Rev7のbugfix 該当するdivが確実に生成される前に統合canvasが設置される可能性があった(editable layerで露呈する)
-// 2014/06/06 : Rev.8: クロージャ化(モジュール化) leaflet.js等に差し込めるようにする準備。 これにより、このバージョンからアプリの作り方が変更、svgMap.*で関数を呼び出す必要がある。
-// 2014/06/10 : setGeoCenter、setGeoViewPortのちらつき防止処理
-// 2014/06/19 : 一段に限って、imageのtransform="matrix(..)"を実装
-// 2014/07/25 : text element ( x,y,font-size,fill,ref(svg,x,y)) (not support rotate multiple x,y)
-// 2014/07/31 : zooming,pannning anim : transform3d
-// 2014/08/06 : SVGImages[]のsvg文書内で、htmlのimg,divとの関係を作るためにつけていたidを、"iid"属性に変更 大規模変更なのでバグ入ったかも・・
-// 2014/09/01 : container.svgのlayer classの特性に"batch"を追加 これを指定すると同じクラス名のレイヤーを一括ON/OFFできるUI(項目)が追加
-// 2014/09/08 : レイヤーUI用select要素が multipleの場合に対応。さらにjqueryui のmultiselectを用いている場合にも対応。
-// 2014/11/06 : 重なったクリッカブルオブジェクトに対し特別な処理を提供する(衝突判定(RDC?))機能の構築開始
-// 2014/11/14 : RDCライブラリ完成・・が、以下の実装ではUIが直感的でないのでこれは不使用(ライブラリは残置)
-// 2014/11/19 : 重複するPOIの選択UI実装(RDC使用せず、指定したアイコンのみに対する重複で判別)
-// 2014/12/03 : レイヤ選択UI改良　機能を持たない単なるレイヤグループ(class名が共通)も含めoptgroupでまとめ表示
-// 2014/12/15 : フレームワークの拡張：override, getObject, callFunction
-// 2014/12/15 : PoiTargetSelection: closeボタン、候補にレイヤー名記述　追加
-// 2015/02/12 : 画面上に要素がない状態でもレイヤーが存在している動的コンテンツにおいて、不用意にonLoad()が動くのを止めた
-// 2015/02/12-: Rev.10: META name="refresh"   content="in sec."
-// 2015/03/23 : stroke-dasharray (besides non-scaling-stroke)
-// 2015/03/25 : marker subset (arrow) and canvs related debug
-// 2015/03/31 : marker
-// 2015/05/26 : 非同期な動的コンテンツのためにユーティリティ関数（画面更新）を拡張
-// 2015/07/08 : Rev.11: image要素でビットイメージが参照されているときに、そのspatial media fragmentを解釈しクリップする
-// 2015/09/11 : 動的コンテンツで、スクリプトがエスケープされていなくても動作するようにした
-// 2016/05/16 : Fix Safari crash
-// 2016/08/10 : Fix CORS contents bug.. konnoさんのコードに手を付けたので、サイドエフェクトが懸念される・・ 8.10のコメントのところ
-// 2016/10/03 : Rev.12:UIモジュール化リファクタリング開始： Authoring tools除去
-// 2016/10/04 : レイヤーツール除去開始
-// 2016/10/06 : getSwLayersとcheckLayerSwitchの問題点解消、getRootLayersProps()追加(layer UI分離準備工事)
-// 2016/10/11 : レイヤーツール分離
-// 2016/10/14 : レイヤー固有UIハンドラ svgImagesProps.controller [URL(html||png||jpg)]
-// 2016/10/26 : 操作状況などのcookie保存復帰機能(resume)
-// 2016/11/29 : Rev.13:(GIS Extension)開発開始。 パーサがSVGMapコンテンツからgeoJSON(ライクな)データ構造を出力できる機能をまず持たせたい。次にそれを使って、地理空間情報処理関数をサービスする(別建ての)フレームワークを提供できるようにしたい。
-// 2016/12/16 : GIS Extension基本構造完成。GeoJSON生成
-// 2016/12/21 : Rev.14:(Authoring Tools)開発開始。まずはRev11で切り出したPOI Editorを外部フレームワークとして移植。
-// 2016/12/27 : ポリゴン・ポリライン・Pathオーサリングのためのヒットテスト実装
-// 2017/01/17 : defs下の<g>に2Dベクタグラフィックス要素群があるものをuseできる機能と、その場合にuse側にmetadataがあってもmetadataをヒットテストで取得できる機能を実装
-// 2017/01/18 : path A, circle ellipseなどでVE non scaling効くようにした
-// 2017/01/25 : カスタムなモーダルダイアログAPI、POI&2D ObjのProp表示機能をフレームワーク化(setShowPoiProperty)し、レイヤ固有表示(しなくても良い)機能も実装可能とした。
-// 2017/02/17 : 野良XMLではIDは機能しない(単なるid attrにすぎない)？。そのためgetElementByIdも機能しない。そこで、querySelectorを使用した代替物を構築。要注意なのは、単なるattrなので、idが重複していようがお構いなしになる・・
-// 2017/03/08 : URLフラグメントで、表示領域、表示レイヤ(レイヤタイトルによる)、非表示レイヤ(同)を指定可能に
-//              表示非表示レイヤはカンマ区切りで複数指定可能,またレイヤ名にハッシュをつけて文字列を入れると、そのレイヤーのsvgコンテナのlocation.hashにそれが追加される(その際"="は"%3D",&は"%26"でエンコード必要)
-//              ex:http://svg2.mbsrv.net/devinfo/devkddi/lvl0.1/developing/SVGMapper_r14.html#visibleLayer=csv textArea#hello%3D2%26good%3Dday&hiddenLayer=csv layer#hellox%3D2x%26goodx%3Ddayx&svgView(viewBox(global,135,35,1,1))
-// 2017/03/16 : イベントを精密化 zoomPanMapはviewPort変化時のみ、 screenRefreshedを新設しこちらはvp変化しなかったとき　これでrefreshScreen()に纏わる無限ループリスクを抑制した。
-// 2017/08/14 : centerSightを用いたオブジェクト選択機能を拡張し、POIもベクタもtickerに複数出現・選択可にする　ただしうcheckTicker()での二重パースの課題あり
-// 2017/08/15 : iOS safariでgeolocationAPIがなぜか動かないので・・パッチ
-// 2017/08/16 : URLフラグメントのvisibleLayer,hiddenLayerに、ワイルドカード"*"を指定可能に
-// 2017/08/17 : 動的レイヤーのF/Wの大BUGを改修(svgMapの内部関数が露出していた・・・)
-// 2017/08/22 : Property表示パネルにタイトル表示可能に
-// 2017/08/?? : ページのhashが変更された場合、それに追従する。
-// 2017/08/?? : svgImagesProps[].metaSchema, .script.transform,getCanvaSize,geoViewBox,location
-// 2017/08/?? : レイヤーリストUIのサイズが収まるようにする
-// 2017/09/29 : ルートにあるレイヤー限定だが、anim要素にdata-nocache（常に更新）属性での処理追加
-// 2018/01/18 : checkTicker()での二重パース防止処理　これでようやくまともな路線に復帰したと思う　そろそろrev15正規リリース近いか？
-// 2018/01/18 : from rev14 update: 2017/08/21 : defaultShowPoiPropertyをリッチなUIへ変更
-// 2018/01/18 : from rev14 update: 2017/08/25 : Bug Fixed. ZoomUp/ZoomDownボタンが未定義の際、エラーで停止しない様変更
-// 2018/01/18 : from rev14 update: 2017/08/25 : updateCenterPosをユーザが書き換えることができるよう変更
-// 2018/01/18 : from rev14 update: 2017/08/29 : smoothZoomInterval,smoothZoomTransitionTimeを設定できるよう変更,getVerticalScreenScaleを外部よりcallできるよう公開
-// 2018/01/17 : add parseEscapedCsvLine(),gpsCallback(),getTickerMetadata(),checkSmartphone(),reLoadLayer()
-// 2018/01/29 : from rev14 update: レイヤーのパスを指定する際ドメインなしのフルパスで指定できるよう変更
-// 2018/01/29 : from rev14 update: data-controllerをルートコンテナのレイヤー要素から指定できるよう機能追加
-// 2018/02/02 : オブジェクトクリック機能のリファクタリング：testClickの機能とgetObjectAtPointをrev15で大幅拡張したtestTickerに統合 testClick, POItargetSelectionはこれにより不要となったので廃止、これに伴いPOI(img要素)に設置していた testClick EventListenerを全撤去
-// 2018/02/05 : Rev15 Release クリーンナップ
-// 2018/02/23 : <text>の改善
-// 2018/02/26 : captureGISgeometriesでビットイメージタイル"Coverage"も取得可能とした　ただし、captureGISgeometriesOptionで設定した場合
-// 2018/03/02 : useではなく直接imageで設置したnonScaling bitImageもPOIとして扱うようにした　結構大きい影響のある改修
-// 2018/04/06 : Edge対応ほぼ完了したかな これに伴いuaProp新設　今後isIE,verIE,isSPをこれに統合したうえで、IE10以下のサポートを完全に切る予定
-// 2018/06/01 : script実行ルーチンのデバッグ
-// 2018/06/15 : script実行ルーチンのデバッグ
-// 2018/06/19 : script実行ルーチンのデバッグ
-// 2018/08/01 : TreatRectAsPolygonFlag
-// 2018/09/04 : ビットイメージ(image要素)にstyle.imageRendering pixelated実装 ヒートマップなどを最小ファイルサイズ構築するためのもの(一応Edgeも対応*4Edge　今後このルーチンはEdge対応次第で廃止する)
-// 2019/03/12 : authoring tools editing 判別小修整、imageRendering->image-rendering 修正
-// 2019/04/16 : getHitPoint なるべく端を使わないように改良
-// 2019/05/17 : captureGisGeometries()のCoverageのtransform対応
-// 2019/10/20 : ビットイメージのDataURL有効化
-// 2019/11/14 : refreshScreen()の排他制御導入
-// 2019/11/14 : ビットイメージにもキャッシュ不使用オプション有効化
-// 2019/11/14 : editableレイヤーでも、レイヤ非表示にしたら、DOMを消去することに仕様変更
-// 2019/12/26 : refreshScreen()の効率化 主にcaptureGisGeometries()->vectorGISの高性能化を図るため
-// 2020/01/30 : ラスターGISの高速化等を行うため、bitimageについてもproxy経由で取得させる機能を実装(svgMap.setProxyURLFactory)
-// 2020/02/13 : ERR404やGETに時間がかかり過ぎたときのエラーアウト処理を強化(LayerUIも)
-// 2020/03/26 : Rev16 データがLatLngで表示がメルカトルの表示モードを実装
-// 2020/05/20 : DevicePixelRatioをレイヤーごとに設定できる機能を実装（PWAでオフラインモード時、DLしていないズームレンジで白紙表示になるのを抑制する目的を持っている）
-// 2020/06/09 : svgImagesProps[layerID].preRenderControllerFunction, preRenderSuperControllerFunction, svgMap.setPreRenderController() そのレイヤーの描画前(svgの<script>要素のonzoom,onscroll関数と同じタイミング)に同期的に呼び出す関数(eval撤去準備工事) (なお、preRenderControllerFunctionは、レイヤ固有UIのscriptで予約関数名preRenderFunctionを定義するだけでも設置される
-// 2020/08/14 : データのほうがメルカトル図法のモノを扱えるようにした。dynamicWebTile_pureMercator.svg参照
-// 2020/08/14 :↑で準備できたのでメルカトル図法のビットイメージをPlateCareeに（その逆も）することを可能にしてみたい実装を開始
-// 2020/08/19 : child2canvasもしくはchild2rootが非線形の(.transform,.inverseがある)場合、そのimgae要素のビットイメージを非線形変換する機能を発動させる。というのが基本路線だね。これにはcanvasへの読み込みとピクセルアクセスが多分必要なので、proxy経由でのimage取得が必要かな。
-// 2020/10/23 : 3/26からのメルカトル図法サポート機能を汎化し、ユーザがscriptやdata-controllerで任意の図法を関数定義可能な機能を実装。これでMaps4WebWSで宣言していた機能要件を満たすことができた。
-// 2021/01/26 : Rev16本流に載せる　効率化＆いくつか検証もできたため ～　16.xはこれにて終了　16とする
-// 2021/04/02 : Rev17 cookie->localStorage, now loading の抑制, root documentをlocalStorageの設定をベースにした編集後のものを投入可能に　など, レイヤ構成編集用のツールを別フレームワークで用意(こちらはレイヤ編集用ページ別建てか？)
-// 2021/06/14 : getLoadErrorStatistics() timeout等のロードエラーの統計
-// 2021/08/10 : image要素 data-mercator-tile="true"サポート
-// 2021/09/06 : image要素 style:filterサポート (なお、このスタイルの継承はしない・・)
-// 2021/09/16 : ラスターGISを高速化するときなどに使う、ベクタデータの描画をスキップする機構(captureGISgeometriesOption(,, SkipVectorRenderingFlg ))
-// 2021/10/29 : Angularや他FWのCSSが与えるimg要素のwidth,maxWidth等のstyleをオーバーライドし表示崩れを防止
-// 2021/11/04 : ビットイメージの任意図法対応機能() imageTransformを改良：transformがあるimage要素に対応
-// 2022/03/04- : rev18 svgコンテンツのscript要素の処理をレイヤ固有UIのwebAppに統合
-// 2022/04/12 : image:crossorigin(値は見てない), svgMap.getCORSURL()  from rev17branch
-// 2022/04/12 : line Hittesterの改善 (use isPointInStroke) from rev17branch
-// 2022/05/16 : customHitTester from rev17
-// 2022/05/30 : pixelated, opacity,filterのDOM操作を反映させる from rev17
-// 2022/09/22 : customHitTesterに、isMapCenterHitTestで(伸縮スクロール時自動発生する)中心ヒットテストなのかどうかを送信できるようにした from rev17
-// 2022/09/26 : 指定したレイヤーに対して共通クエリパラメータを付与する仕組み(commonQuery)を設置(コンテンツ取得用tokenの設定などで使用できる) from rev17
-// 2022/10/31 : Shift + drag zoom実装 from rev17
-// 2022/12/05 : PCでもタッチ対応 from rev17
-// 2022/05/24- ESM&class化 作業中・・
-// 2023/02/15 : 線のヒットテスト改善し、getHitPoint廃止(PathRenderer)
-// 2023/04/07 : ビットイメージアイコンを中心としたパフォーマンスチューニング
-// 2023/04/21 : ベクトルグラフィックスのパフォーマンスチューニング(XML属性キャッシュ)
-// 2023/05/24 : mapcanvasを囲むmapCanvasWrapperをつくりイベント検出に使い、右クリック下ドラッグによるズームアウトの操作性を改善(サイドエフェクトを少し注意しておく)
-// 2023/06/22 : wheelイベント(含タッチパッドのジェスチャ)によるズーム処理を改良
-// 2023/11/27 : captureGISgeometriesOption : add captureAlsoAsBitImage
-// 2023/11/27 : svgImageProps.isClickableをbooelanではなくobjectに。ハイライトのカスタマイズを可能に
-// 2023/12/28 : SVGMap*Class*.jsはクラス定義を、SVGMap*module.jsは、SvgMapインスタンスの生成を行うコード(ほぼ空)に分離。
-// 2024/02/06 : LayerSpecificWebAppHandlerのLayerUIからの分離に対応。
-// 2024/08/06 : コンテナ差分ファイル指定機能：(#customLayers=customLayer0.json
-//
-// Issues:
-// 2022/03/17 getVectorObjectsAtPointの作法が良くない
-// 2021/10/14 ルートsvgのレイヤ構成をDOMで直接操作した場合、LayerUIが起動/終了しない（下の問題の根源）mutation監視に相当するものが必要（トラバースしているので監視できるのではと思う）
-// 2021/10/13 FIXED setRootLayersPropsを単体で呼んだだけだと、LayerUIが起動/終了しない。(updateLayerListUI～updateLayerListUIint～updateLayerTable必要)これは本質的にまずい。
-// 2021/09/13 captureGISgeo. "ロードできてないイメージは外す"(これで検索して出る場所)のロジックが雑、動的レイヤー取りこぼす可能性がある。読み込み完了(zoomPanMap ev)時点で確認する形が好ましいと思う。
-// 2020/09/11 ビットイメージとベクターの混合レイヤーで、上下関係がDOM編集によっておかしくなることがある～digitalTyphoonレイヤーに風向を追加したとき、風速イメージのimage要素を消去して再追加する処理をすると（モデルを変えるときにそういう処理が入る）、最初は下にイメージが表示されるが、差異追加後上に来てしまう。　この辺昔imageはなるべく上にくるようにした記憶もあるので、いろいろ怪しい感じがする。
-// 2018/09/07 .scriptが　そのレイヤーが消えても残ったまま　setintervalとかしていると動き続けるなど、メモリリークしていると思う　やはりevalはもうやめた方が良いと思う・・
-// 2018/6/21 SvgImagesProps　もしくは　rootLayersProps?にそのレイヤのデータの特性(POI,Coverage,Line etc)があると便利かも
-// 2018/6/21 もはやXHRでsvgを取得するとき、XMLとして取得しないほうが良いと思われる(独自の編集後にwell formed XMLとして扱っているので)
-// 2018/3/9 メタデータのないPOIが単にクリッカブルになる。またvectorPOIはclickableクラスを設定しないとクリッカブルでないなどちょっとキレイでない。
-// 2018/3/5 FIXED Vector2DのcircleがcaptureGISで正しい値が取れてない？
-// 2018/3/5 visibility hiddenのVector2Dがヒットテストにかかってしまうらしい？imageも要確認
-// (probably FIXED) 2016/06 Firefoxでヒープが爆発する？(最新48.0ではそんなことはないかも？　たぶんfixed？)
-// 2016/12 ほとんどすべてのケースでtransformが使えない実装です (transform matrix(ref))とか特殊なものとCRSのみ
-// 2016/12 FIXED EdgeでOpacityが機能してない(たぶんIE専用Opacity処理が影響してると思う・・・)
-// (probably FIXED) 2016/12 Resumeのレイヤ選択レジュームが遅い回線で動かない(非同期の問題か)
-// (probably FIXED) 2016/12 初回ロード時のhtml DOMクリーンナップができていない
-// 2017/01 FIXED? Authoring Tools Ext.で編集中にResumeが動かない
-// 2017/01 FIXED? レイヤーがOffになっているときに、レイヤ特化UIが出たまま(これは本体の問題ではないかも)
-// 2017/02 FIXED? getElementByIdNoNSの問題が再び。　plane XMLとなっている文書では、IEもgetElementById使えない。.querySelector('[id="hoge"]'));は使えるので・・・対策したが、そもそもXML:IDの機能(重複しないID)を満たした機能を提供していない
-// 2017/08 FIXED? ズームアップボタンを連打すると拡大アニメが崩れる？(Firefox 54.01 only? グラフィックスバッファのオーバーフローか?)
-// 2017/08 FIXED centerSightのオブジェクト検索(の特に2D Vector)がスクロール＆レンダリング後必ず動くようになった。(checkTickerが起動)これは全ドキュメントのパース処理を伴い、レンダリングとダブっていて重い・非効率と思う・・　あらかじめhitPointを指定してレンダリングとオブジェクト検索を一回のループで実現できないだろうか？
-// 2017/09 FIXED LandSlideのベクトルが表示された状態で、最初のパース後透明度が設定されてない　もしくは二重書き？　Active Faultでも同じだった　二重書きの様子が濃厚
-// 2017/08/29 FIXED ERR404が発生すると、その後レイヤーのON/OFFしても伸縮スクロールしない限り表示がされないなど　動きがおかしく
-//
-// ToDo:
-// 地図画面クリックのカスタマイズ機構（ビットイメージのある部分をクリックしたらそれに紐付いたデータを表示したいとか）→checkTicker()に仕掛けられるような
-// 各要素のdisplay,visibilityがcss style属性で指定しても効かない
-// 動的レイヤーで重ね順が破綻する(see http://svg2.mbsrv.net/devinfo/devkddi/lvl0/locally/nowcastHR/)
-// IE < 11実装の除去
-// POIや2Dベクタをクリックしたとき、レイヤ文書に対して、イベントを飛ばしてあげると良いと思う
-//
-// devNote:
-// http://svg2.mbsrv.net/devinfo/devkddi/lvl0.1/airPort_r4.html#svgView(viewBox(global,135,35,1,1))
-// isPointInPath plolygonのばあいはそのまま、lineの場合は、このルーチンで生成したpathHitPoitnに小さなポリゴン(rect)を生成し、そこだけで、hittestする　これならばHTMLDOMへの影響が無いので、改修範囲が広範囲にならないかと思う。
+
+"use strict"; // 2022/05/06 Strictに移行します
 // testClickedは何のためのもの？ 2018.2.2 のtestClickの廃止とともにこの変数及びセッター関数も廃止した
 //
 // 重複が疑われる関数  (getSymbolProps, getImageProps)
 // rootContainerでvector2Dが入ると破綻する 2014.7.25
 //
-// ToDo : LineとかPolygonとか（文字とか^^;）？
-// ToDo : 注記表示[htmlかcanvasか?]、メタデータ検索
-// ToDo : IE以外でcanvas外でドラッグズーム動作とまる挙動
+
 //
 
 "use strict"; // 2022/05/06 Strictに移行します
@@ -1420,7 +1205,6 @@ class SvgMap {
 							// ICON表示
 							var symb = symbols[ip.href];
 							if (symb.d) {
-								// ベクタ図形のシンボル... toDo 2015.3.31
 							} else {
 								ip.href = symb.path;
 								imgBox.x += docDPR * symb.offsetX;
@@ -1938,8 +1722,7 @@ class SvgMap {
 				this.#svgImagesProps[imageId].Path = childSVGPath;
 			}
 
-			//			console.log("change SVG's path. this has issues....");
-			//			this.#svgImagesProps[imageId].Path = childSVGPath; // added 2017.9.5 : ハッシュが更新されることがあり、それを更新する必要があると思われる・・・　ISSUE:　ただ完全にURLが刷新されるケース(hrefがsetattributeされる)もあり、今のルーチンはそれを検出し再ロードできないのではないか？　⇒　2024.10.02 これで解消できた？
+            
 		}
 	}
 
@@ -2296,8 +2079,6 @@ class SvgMap {
 	 * @param {Number} dpr
 	 * @param {String} layerId
 	 *
-	 *
-	 * TODO: デフォルト引数としてdpr=1, layerId="root"を設定するのがベター？
 	 */
 	#setDevicePixelRatio(dpr, layerId) {
 		// 2020/5/13 layerId毎に指定するlayerDevicePixelRatio設定＆クリア機能を追加
@@ -2603,7 +2384,6 @@ class SvgMap {
 		captureAlsoAsBitImage,
 	) {
 		// 2018.2.26
-		// TBD : ロードできてないイメージは外すかどうか, onViewportのもののみにするかどうか のオプションもね
 		if (typeof BitImageGeometriesCaptureFlg == "object") {
 			// 第一オプションをオブジェクトにした場合は、ここで全部を設定できるようにする
 			for (var pn in BitImageGeometriesCaptureFlg) {
@@ -2731,7 +2511,6 @@ class SvgMap {
 		return this.#matUtil.getConversionMatrixViaGCS(...params);
 	}
 	/**
-	 * TODO
 	 * @param  {string} originalURL
 	 * @param  {boolean} alsoCrossoriginParam
 	 * @returns {{ url: originalURL, crossorigin: false }}
@@ -2740,7 +2519,6 @@ class SvgMap {
 		return this.#proxyManager.getCORSURL(...params);
 	}
 	/**
-	 * TODO
 	 * @param  {Node} XMLNode
 	 * @param  {string} searchId
 	 * @returns {Element|null}
@@ -2902,14 +2680,13 @@ class SvgMap {
 	 *
 	 * @description rootに設定されているCRS(Coordinate Reference System)を取得する関数
 	 * @returns {Mercator|Object} Objectの場合はa,b,c,d,e,f,isSVG属性を持つオブジェクト
-	 *    TODO: 一本化するのが正しいのでは？
 	 */
 	getRootCrs() {
 		return this.#mapViewerProps.rootCrs;
 	}
 	/**
 	 *
-	 * @param  {undefined} params - 不要 TODO:削除すること
+	 * @param  {undefined} params
 	 * @returns {Object} 登録されているレイヤーの一覧(Container.svgと同義)
 	 */
 	getRootLayersProps(...params) {

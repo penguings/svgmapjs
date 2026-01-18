@@ -6,9 +6,8 @@
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
 //
-// History:
-// 2022/07/19- SVGMapウィンド側と、カスタムレイヤマネージャアプリ側のライブラリを切り分け
 
 import { InterWindowMessaging } from "@penguings/svgmapjs";
 

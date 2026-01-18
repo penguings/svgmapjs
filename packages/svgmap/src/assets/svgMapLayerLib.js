@@ -17,9 +17,8 @@
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
 //
-// History:
-// 2024/07/23 1st implementatiion, to fix https://github.com/svgmap/svgmapjs/issues/5
 
 // Note:
 // 将来、このイニシャライザーは、より高度・複雑な実装になる可能性がある。またWeb App Layerの作法もさらに変更される可能性もある

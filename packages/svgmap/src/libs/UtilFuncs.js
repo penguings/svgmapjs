@@ -71,15 +71,9 @@ class UtilFuncs {
 		return this.querySelector('[id="' + qid + '"]'); // このthisは、呼び出すオブジェクトによってそれに割り付けられる形で良い（のでbind不要）
 	}
 
-	// 同じ関数がSVGMapLv0.1_LayerUI2_r2.jsにもある・・(getHash) : fixed 2024/10/04
 	static getUrlHash(url) {
 		if (url.indexOf("#") >= 0) {
 			var lhash = url.substring(url.indexOf("#") + 1);
-			/** bug fixed 2024/10/04
-			if (lhash.indexOf("?") > 0) {
-				lhash = lhash.substring(0, lhash.indexOf("?"));
-			}
-			**/
 			lhash = lhash.split("&");
 			for (var i = 0; i < lhash.length; i++) {
 				if (lhash[i].indexOf("=") > 0) {
@@ -335,7 +329,6 @@ class UtilFuncs {
 	}
 
 	static getElementByAttr(XMLNode, searchId, atName) {
-		// 2020/09/28 元のをgetElementByAttr_obsolutedにした ISSUE対応
 		if (!XMLNode || !XMLNode.hasChildNodes()) {
 			return null;
 		}
@@ -761,7 +754,7 @@ class UtilFuncs {
 			if (nonScaling) {
 				height = 0; // 2018.2.23 上の決め打ちはnon-scalingの場合まずい・・・ 拡大すると常にビューポートに入ってしまうと誤解する。これならたぶん0にした方がベター
 			}
-			width = height; // 適当・・ 実際は文字列の長さに応じた幅になるはずだが・・・ ISSUE
+			width = height;
 			text = imgE.textContent;
 		}
 

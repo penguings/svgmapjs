@@ -10,18 +10,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 //
-// History:
-// 2018/02/08 Start coding
-// 2018/02/16 レイヤによって色を変化させる
-// 2018/02/28 Rev2: POIのバーグラフ化、ビットイメージレイヤー
-// 2018/06/25 Rev3: クロージャ化 , 名称変更: svgMapCesiumWrapper
-// 2022/08/04-開発中 Rec4: ESM化、window間連携のメッセージ化
-//
-// ToDo,ISSUES:
-// 伸縮スクロールに対する同期表示
-// cesium上でクリックしたオブジェクトのプロパティをSVGMap.js側のUIで表示
-// 棒グラフ以外の表現
-//
+
 
 import { InterWindowMessaging } from "@penguings/svgmapjs";
 

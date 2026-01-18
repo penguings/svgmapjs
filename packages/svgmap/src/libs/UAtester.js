@@ -8,9 +8,6 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 //
-// History:
-// 2022/08/17 coreから切り出し
-// uaProp isIE,verIE,isSPなどをまとめる
 // IE系のメンバーは既に意味はなくなっている（IEサポートは終了済み）後ほど整理・・
 
 class UAtester {

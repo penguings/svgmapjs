@@ -471,7 +471,7 @@ class ShowPoiProperty {
 	 * @param {String} csv
 	 * @returns {Array}
 	 *
-	 * @description TODO: utilに移設するほうがよいのでは？
+	 * @description
 	 */
 	parseEscapedCsvLine(csv) {
 		// ' や " でエスケープされたcsvの1ラインをパースして配列に格納する。(高級split(","))

@@ -95,7 +95,6 @@ class EssentialUIs {
 			Object.prototype.hasOwnProperty.call(mapCanvas.dataset, "src")
 		) {
 			// data-src属性に読み込むべきSVGの相対リンクがある 2017.3.6
-			// NOTE: 空文字でも「指定された」とみなす（テストや特殊環境での初期化継続のため）
 			rootSVGpath = mapCanvas.dataset.src;
 		} else if (mapCanvas.title) {
 			// title属性に読み込むべきSVGの相対リンクがあると仮定(微妙な・・) 最初期からの仕様
@@ -199,8 +198,7 @@ class EssentialUIs {
 			"::-webkit-scrollbar{-webkit-appearance:none;width:7px;}::-webkit-scrollbar-thumb{border-radius:4px;background-color:rgba(0,0,0,.5);-webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);}";
 		document.documentElement.appendChild(stylesheet);
 
-		// 2017.8.15 iPhone Safari landscape mode issue fix
-		// see: https://stackoverflow.com/questions/33039537/ios9-mobile-safari-landscape-css-bug-with-positionabsolute-bottom0
+		
 		var htmlStyle = document.documentElement.style;
 		htmlStyle.position = "fixed";
 		htmlStyle.width = "100%";

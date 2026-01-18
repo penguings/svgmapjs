@@ -7,9 +7,8 @@
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
 //
-// History:
-// 2022/08/16 SVGMap.jsから切り出し
 
 class MatrixUtil {
 	/**
@@ -244,7 +243,7 @@ class MatrixUtil {
 		if (toCrs.transform || fromCrs.transform) {
 			// マトリクスの代わりに関数を返却する 2020.3.17
 			var itCrs = this.getInverseMatrix(toCrs);
-			// スケールはどうするか‥　原点でのスケールにしておくか？ TBD
+            
 			var conversionFunc = function (inCrd) {
 				var globalCrds = this.transform(inCrd.x, inCrd.y, ifCrs);
 				var ans = this.transform(globalCrds.x, globalCrds.y, toCrs);

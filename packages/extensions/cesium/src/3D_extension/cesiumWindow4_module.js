@@ -9,18 +9,6 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 //
-// History:
-// Rev.1 : 2018/02/10 2D vector view
-// Rev.2 : 2018/02/28 Raster and POI bar graph impl.
-//         2018/04/05 Add getHeights Func
-//         2022/04/xx Proxy機構を整理。
-//         2022/05/19 背景図・地形プロバイダの追加＆初期化を別ソース化・ion分離、bin有効化・整理(getProviderViewModels.js)
-// Rev.3 : 2022/05/20 SVGMap.jsの統一化されたProxy機構を利用可能に
-// Rev.4 : 2022/08/10- 開発中 ESM化、SVGMap Window, Cesium3D Viewer Window連携をmessagingに切り替え
-
-// ISSUES:
-// 地理院のテレインでは、sampleTerrainMostDetailedが動かなくなった(Cesiumがまた仕様変更した感じ)
-// 一方でCesium標準テレインで、sampleTerrainを使うと　たとえばレベル15指定すると動かない
 
 //var testData="ddd";
 

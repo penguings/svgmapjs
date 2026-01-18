@@ -11,60 +11,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 //
-// History:
-// 2016.12.02 コアにGeoJSONパース機能実装、それを用いたPolygon内のPoitns包含チェック初期実装
-// 2016.12.07 JSTS implementation
-// 2016.12.16 Totally Asynchronus Proecssing　ほぼ満足する機能が入ったと思われる。＞初期リリースとする
-// 2017.06.12 Geojsonの並びが逆(基本フレームワークも)だったのを修正のうえ、こちらも修正(getSVGcoord)、drawGeoJson(geoJson->SVG変換の上描画)の完成度を高め公開関数へ
-// 2018.01.04 Geojsonファイル内にプロパティが含まれている場合、埋め込むよう実装
-// 2018/06/21 Rev2 : ラスターGIS＝ビットイメージのimageをcanvasに読み込み、bitImage(画像処理)を用いたGIS機能～～　Web上で公開されている主題情報の多くがラスターなので・・
-// 2018/08/01 Add pointOnly option / get(Included/Excluded)Points
-// 2018.12.26 KMLを直接レンダリングする機能を実装
-// 2019/05/17 getInRangePoints(): Coverageがtransform付きのものをサポート
-// 2019/12/26 効率向上のためのオプション追加(getIncludedPointsのpreCapturedGeometry)
-// 2020/01/14 buildDifference()
-// 2020/01/30 ラスターGISの高速化に着手：getImagePixData 自ドメイン経由のビットイメージの場合、画面に表示しているimgリソースをそのまま画像処理用として利用する。　これをより有効にするため、コアモジュールもbitimageをproxy経由で取得させる機能を実装している(svgMap.setProxyURLFactory)
-// 2020/02/14 ラスターGISの高速化・大分完成 残るはcrossorigin anonymousをどうするか
-// 2020/02/17 ラスターGISの高速化。多分これで完成しました (naturalWidth/Height, crossorigin拡張 on BaseFW)
-// 2020/07/08 ラスターGIS: Polyline実装
-// 2020/07/10 ラスターGIS: Plygon実装  - これでRev3の重要機能完成
-// 2020/07/15 ラスターGIS(Polygon)結果のビットイメージ可視化用関数　＆　コード整理
-// 2020/07/27 Rev3 : ラスターGIS: 非対角成分あるラスターカバレッジでもPolyline,Polygonサポート
-// 2021/04/13 drawGeoJson: geoJsonのスタイリング仕様(mapbox)をサポート
-// 2021/10/27 ラスターGISの画像キャッシュの明示的なOn/Offを可能に
-// 2022/03/xx geoJsonのレンダラのバグ修正・高速化
-// 2022/04/xx Proxy処理をリファクタリング(メインのFW側および切り出したcorsProxy.js側で処理するように)
-// 2022/10/21 ラスターGIS: filterをサポート
-// 2023/05/11 getBufferedPolygon
-// 2023/11/06 buildIntersection / VectorGIS の高度化 (options.uniteSource1/2,areaCompare)
-// 2023/11/20 ベクタ図形をラスタ化した後にラスタGISをかけるパターンに対応 (imageIID=="layerCanvasImage" 苦しいパッチでサイドエフェクトあり得るかもなので、あとで直すかも?)
-//
-// ISSUES:
-//
-// --- これらはFixedとなったかな？
-// !!!!! On going ISSUE 使い続けているとUncaught TypeError: Cannot read property 'points' of undefined at getInRangePointsS2 (SVGMapLv0.1_GIS_r2.js:110x)？？ R15のテストで、避難所と土石流危険渓流とRasterGISで、連続検索実行でテスト可能になってる
-//
-// 今行っているところ、L1361 同一||CORS設定ドメインからの取得
-// setImageProxyで設定したドメインのURLもしくは・・・って感じが良いと思う
-// ---
 
-//
-// ACTIONS:
-// ・ポリゴン包含、ポリラインクロス等の基本関数(jtsのような) done
-// ・ポイント（マウスポインタ―）と、ポイント、ポリライン、ポリゴンヒットテスト（既存のクリッカブルオブジェクト同等動作）：　ただし、ポイント、ポリラインはバッファが必要なので後回しか？ done
-// ・ラインと、ライン、ポリゴンのヒットテスト done
-// ・ポリゴンと、ポイント、ライン、ポリゴンのヒットテスト done
-// ・カラーピッカーになりえるもの done
-// ・ベクタプロパティの利用 done
-// ・オートパイロット機能のフレームワーク化(vectorGisLayer/rasterGisLayerの実装の改善と取り込み)
-// ・svgMap.setProxyURLFactoryを個々で統合的に設定するようにした方が良いと思う
-//
-// ・入力：
-// 　・マウスポインタ―ベースの対話的に生成されたオブジェクトと指定したレイヤー
-// 　　⇒　マウスポインタ―によるポイント、ライン、ポリゴンの生成ＵＩ
-// 　　⇒　結果的にインタラクティブなオーサリングシステム
-// 　・指定したレイヤー１と、指定したレイヤー２（および　指定したSVG文書１とSVG文書２）
-// ・出力：対象レイヤーのスタイル変更、新規レイヤー生成
 
 class SvgMapGIS {
 	#svgMap;
@@ -91,41 +38,8 @@ class SvgMapGIS {
 							geojs.coordinates.splice(i, 1);
 						}
 					}
-				} else if (geojs.type == "Polygon") {
-					for (var i = geojs.coordinates.length - 1; i >= 0; i--) {
-						if (geojs.coordinates[i].length < 3) {
-							geojs.coordinates.splice(i, 1);
-						}
-					}
-				}
-				return this.#featureReader.read(geojs);
-			}.bind(this);
-			this.#getGeoJson = function (feature) {
-				return this.#featureWriter.write(feature);
-			}.bind(this);
-		}
-		//console.log("init svgmapgis",this.#jsts,this.#getGeoJson);
-		//	console.log(featureReader, featureWriter, getFeature, getGeoJson);
+//
 
-		// http://stackoverflow.com/questions/22521982/js-check-if-point-inside-a-polygon
-	}
-
-	#inside(point, vs) {
-		// ray-casting algorithm based on
-		// http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
-
-		var x = point[0],
-			y = point[1];
-
-		var inside = false;
-		for (var i = 0, j = vs.length - 1; i < vs.length; j = i++) {
-			var xi = vs[i][0],
-				yi = vs[i][1];
-			var xj = vs[j][0],
-				yj = vs[j][1];
-
-			var intersect =
-				yi > y != yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
 			if (intersect) inside = !inside;
 		}
 
