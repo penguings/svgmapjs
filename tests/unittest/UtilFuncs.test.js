@@ -2,8 +2,7 @@
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
-import { UtilFuncs } from "../../libs/UtilFuncs";
-import { SvgMapElementType } from "../../libs/SvgMapElementType";
+import { UtilFuncs, SvgMapElementType } from "@penguings/svgmapjs";
 import { expect, jest } from "@jest/globals";
 import * as fs from "node:fs/promises";
 

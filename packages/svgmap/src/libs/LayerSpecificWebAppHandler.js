@@ -50,9 +50,8 @@
 // 2023/08/24 : ↑の問題がChromeでも起きる環境があることが判明。iframeのhtmlのキャッシュを無効化することで対応。そろそろ仕様変更などの本質的な対策が求められる
 // 2024/07/23 : To fix issue : https://github.com/svgmap/svgmapjs/issues/5　webAppレイヤーのプログラミング作法の変更あり
 
-import { SvgMapGIS } from "../SVGMapLv0.1_GIS_r4_module.js";
-import { UtilFuncs } from "../libs/UtilFuncs.js";
 import { GlobalMessageDisplay } from "./GlobalMessageDisplay.js";
+import { UtilFuncs } from "./UtilFuncs.js";
 
 class LayerSpecificWebAppHandler {
 	static #totalLoadCompletedGuardTime = 20; // XHRでの非同期読み込みを含め読み込み完了検知のためのガードタイム 2021/6/18
@@ -68,7 +67,7 @@ class LayerSpecificWebAppHandler {
 	//	#layerGroupStatus; // layerGroupStatusは今はグループ折り畳み状態のみ管理
 	#layerSpecificUI; // layerSpecificUIのコンテナ要素
 	#svgMap;
-	#svgMapGIStool; // ISSUE SVGMapGISは、今後はそもそも各LayerWebApp側でimportするだけで十分なのではないか説(今は従来継承のために起動時暗黙インスタンスにしてある)
+	#svgMapGIStool; // （任意）必要なら外部から注入する
 	#svgMapAuthoringTool;
 	#svgMapLayerUI;
 
@@ -83,7 +82,12 @@ class LayerSpecificWebAppHandler {
 
 	#iframeOnLoadProcessQueue = {};
 
-	constructor(svgMapObj, svgMapAuthoringToolObj, getLayerStatusFunc) {
+	constructor(
+		svgMapObj,
+		svgMapAuthoringToolObj,
+		getLayerStatusFunc,
+		svgMapGIStoolObj = null,
+	) {
 		this.#svgMap = svgMapObj;
 		this.#svgMapAuthoringTool = svgMapAuthoringToolObj;
 		/**
@@ -97,7 +101,7 @@ class LayerSpecificWebAppHandler {
 		);
 		**/
 		this.#iframeOnLoadProcessQueue = {};
-		this.#svgMapGIStool = new SvgMapGIS(svgMapObj, window.jsts);
+		this.#svgMapGIStool = svgMapGIStoolObj;
 		this.#getLayerStatus = getLayerStatusFunc.bind(this.#svgMap);
 		this.#globalMessageDisplay = new GlobalMessageDisplay();
 		console.log(

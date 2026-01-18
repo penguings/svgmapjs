@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	WebApp Layer demo SVG for svgmapjs (this fork)
+	- This layer is referenced from demo-container.svg
+	License: MPL-2.0 (same as this repository)
+-->
+<svg
+	xmlns="http://www.w3.org/2000/svg"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:go="http://purl.org/svgmap/profile"
+	viewBox="13500 -3375 1125 1125"
+	go:dataArea="13500 -3375 1125 1125"
+	data-controller="../controllers/demo-webapp-controller.html#exec=appearOnLayerLoad&amp;requiredWidth=420&amp;requiredHeight=240"
+>
+	<metadata>
+		<rdf:RDF
+			xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+			xmlns:crs="http://opengis.org/xmldtds/transformations.dtd"
+			xmlns:svg="http://www.w3.org/svg"
+		>
+			<rdf:Description>
+				<crs:CoordinateReferenceSystem
+					rdf:resource="http://purl.org/crs/84"
+					svg:transform="matrix(100,0,0,-100,0,0)"
+				/>
+			</rdf:Description>
+		</rdf:RDF>
+	</metadata>
+	<globalCoordinateSystem
+		srsName="http://purl.org/crs/84"
+		transform="matrix(100,0,0,-100,0,0)"
+	/>
+
+	<g>
+		<rect
+			x="13540"
+			y="-3340"
+			width="1045"
+			height="1050"
+			fill="none"
+			stroke="#f59e0b"
+			stroke-width="6"
+			opacity="0.9"
+		/>
+		<text x="13560" y="-3270" font-size="55" fill="#92400e">WebApp layer</text>
+		<text x="13560" y="-3215" font-size="36" fill="#92400e">controller is set in demo-container.svg</text>
+	</g>
+
+	<g fill="#f59e0b" fill-opacity="0.35" stroke="#b45309" stroke-width="3">
+		<circle cx="14220" cy="-2860" r="120" />
+		<rect x="13720" y="-2760" width="240" height="240" rx="18" />
+	</g>
+</svg>

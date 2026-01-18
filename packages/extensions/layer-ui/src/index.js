@@ -1,4 +1,4 @@
-import { SvgMapLayerUI } from "../../../../SVGMapLv0.1_LayerUI_r6module.js";
+import { SvgMapLayerUI } from "./SVGMapLv0.1_LayerUI_r6module.js";
 
 export { SvgMapLayerUI };
 

@@ -97,7 +97,10 @@ class ResumeManager {
 			return true;
 		}
 		// console.log(initialCustomLayersObj);
-		if (!initialCustomLayersObj || typeof initialCustomLayersObj != "object") {
+		if (initialCustomLayersObj == null) {
+			return;
+		}
+		if (typeof initialCustomLayersObj != "object") {
 			console.warn(
 				"setInitialCustomLayers: initialCustomLayersObj is not object exit."
 			);

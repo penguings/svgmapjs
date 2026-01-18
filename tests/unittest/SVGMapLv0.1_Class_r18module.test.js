@@ -4,7 +4,7 @@
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import { beforeAll, it, jest } from "@jest/globals";
 import * as fs from "node:fs/promises";
-import { GenericMatrix } from "../../libs/TransformLib";
+import { GenericMatrix } from "@penguings/svgmapjs";
 
 /*
   Note:
@@ -95,7 +95,7 @@ global.navigator.geolocation = { getCurrentPosition: jest.fn() };
 describe("unittest for SVGMap Core Module", () => {
 	let SvgMap;
 	beforeAll(async () => {
-		const local_SvgMap = await import("../../SVGMapLv0.1_Class_r18module");
+		const local_SvgMap = await import("@penguings/svgmapjs");
 		SvgMap = local_SvgMap.SvgMap;
 	});
 	beforeEach(async () => {

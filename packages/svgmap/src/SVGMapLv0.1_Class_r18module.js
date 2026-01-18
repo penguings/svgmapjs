@@ -503,13 +503,6 @@ class SvgMap {
 
 	async #initLoad() {
 		// load時に"一回だけ"呼ばれる 2024/8/6 async化
-		for (const hook of this.#initLoadHooks) {
-			try {
-				hook(this);
-			} catch (e) {
-				console.warn("SvgMap plugin initLoad hook failed:", e);
-			}
-		}
 
 		if (this.#mapViewerProps.hasUaProps()) {
 			console.log("Already initialized. Exit...");
@@ -535,7 +528,7 @@ class SvgMap {
 		);
 
 		var rootSVGpath = this.#essentialUIs.initMapCanvas();
-		if (rootSVGpath == null) {
+		if (!rootSVGpath) {
 			return;
 		}
 
@@ -875,13 +868,6 @@ class SvgMap {
 		if (!docId && !parentElem) {
 			docId = "root";
 			parentElem = this.#mapViewerProps.mapCanvas;
-		}
-		if (docId == "root" && this.#pendingRootLayersDefinition) {
-			try {
-				this.#applyRootLayersDefinition(this.#pendingRootLayersDefinition);
-			} finally {
-				this.#pendingRootLayersDefinition = null;
-			}
 		}
 		var svgDoc = this.#svgImages[docId];
 		svgDoc.documentElement.setAttribute("about", docId);

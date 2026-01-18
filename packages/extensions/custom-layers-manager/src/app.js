@@ -1,1 +1,1 @@
-export * from "../../../../SVGMapCustomLayersManagerApp_r3module.js";
+export * from "./SVGMapCustomLayersManagerApp_r3module.js";

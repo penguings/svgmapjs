@@ -60,7 +60,7 @@
 // Notes:
 //  root containerでclass=editableの設定がないと、再編集や、レイヤ消去後の再表示での編集結果の保持はできない 2018.2.5
 
-import { SvgMapGIS } from "./SVGMapLv0.1_GIS_r4_module.js";
+import { SvgMapGIS } from "@penguings/svgmapjs-gis";
 
 class SvgMapAuthoringTool {
 	#svgMap;

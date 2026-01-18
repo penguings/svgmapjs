@@ -59,10 +59,7 @@
 //  (FIXED? 2017.9.8) レイヤUI表示ボタンが時々表示されない時がある (少なくとも一か所課題を発見し修正。本体も改修(getRootLayersProps))
 //  zoomPanMapCompletedは、fetchとXHRだけを見ているが、IndexedDBやworkerも見るようにすべき
 
-import { BuiltinIcons } from "./libs/BuiltinIcons.js";
-import { UtilFuncs } from "./libs/UtilFuncs.js";
-
-import { LayerStyleCustomizer } from "./libs/LayerStyleCustomizer.js";
+import { BuiltinIcons, LayerStyleCustomizer, UtilFuncs } from "@penguings/svgmapjs";
 
 class SvgMapLayerUI {
 	#layerListID = "layerList";

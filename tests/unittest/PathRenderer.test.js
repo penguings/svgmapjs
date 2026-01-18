@@ -2,9 +2,9 @@
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
-import { PathRenderer } from "../../libs/PathRenderer.js";
+import { PathRenderer } from "@penguings/svgmapjs";
 import { jest } from "@jest/globals";
-import { SvgMapElementType } from "../../libs/SvgMapElementType.js";
+import { SvgMapElementType } from "@penguings/svgmapjs";
 
 const flagPatterns = [
 	{

@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>svgmapjs WebApp layer controller demo</title>
+		<style>
+			:root {
+				--bg: #0b1220;
+				--panel: rgba(255, 255, 255, 0.95);
+				--border: rgba(0, 0, 0, 0.14);
+				--mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+					"Liberation Mono", "Courier New", monospace;
+			}
+			html,
+			body {
+				height: 100%;
+				margin: 0;
+				background: var(--bg);
+			}
+			.wrap {
+				height: 100%;
+				padding: 10px;
+				box-sizing: border-box;
+			}
+			.panel {
+				height: 100%;
+				background: var(--panel);
+				border: 1px solid var(--border);
+				border-radius: 12px;
+				padding: 10px 12px;
+				box-sizing: border-box;
+				overflow: auto;
+			}
+			h1 {
+				font: 650 14px/1.35 system-ui, -apple-system, "Segoe UI", Roboto,
+					Helvetica, Arial, sans-serif;
+				margin: 0 0 8px;
+			}
+			p,
+			li,
+			button {
+				font: 13px/1.55 system-ui, -apple-system, "Segoe UI", Roboto,
+					Helvetica, Arial, sans-serif;
+			}
+			ul {
+				margin: 8px 0 0;
+				padding-left: 18px;
+			}
+			code {
+				font-family: var(--mono);
+				background: rgba(2, 6, 23, 0.06);
+				padding: 0.1rem 0.25rem;
+				border-radius: 6px;
+			}
+			.row {
+				display: flex;
+				gap: 8px;
+				flex-wrap: wrap;
+				margin-top: 10px;
+			}
+			button {
+				appearance: none;
+				border: 1px solid rgba(0, 0, 0, 0.18);
+				background: white;
+				border-radius: 10px;
+				padding: 8px 10px;
+				cursor: pointer;
+			}
+			button:hover {
+				background: rgba(2, 6, 23, 0.04);
+			}
+			#log {
+				margin-top: 10px;
+				white-space: pre-wrap;
+				font-family: var(--mono);
+				font-size: 12px;
+				color: #111827;
+				background: rgba(2, 6, 23, 0.04);
+				border: 1px solid rgba(0, 0, 0, 0.1);
+				border-radius: 10px;
+				padding: 8px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="wrap">
+			<div class="panel">
+				<h1>WebApp layer controller (iframe)</h1>
+				<p>
+					この HTML は WebApp レイヤーとして iframe 内で開かれ、
+					<code>svgMapLayerLib.js</code> により親側へ初期化通知します。
+				</p>
+				<ul>
+					<li><code>layerID</code> / <code>svgMap</code> / <code>svgImageProps</code> が注入されます</li>
+					<li><code>putGlobalMessage()</code> が注入されます</li>
+					<li>
+						<code>zoomPanMap</code> / <code>screenRefreshed</code> / <code>zoomPanMapCompleted</code>
+						が document に配信されます
+					</li>
+				</ul>
+
+				<div class="row">
+					<button id="btnMessage" type="button">putGlobalMessage()</button>
+					<button id="btnInspect" type="button">Dump injected objects</button>
+					<button id="btnClear" type="button">Clear log</button>
+				</div>
+
+				<div id="log"></div>
+			</div>
+		</div>
+
+		<!-- WebApp layer initializer (non-ESM) -->
+		<script src="../../../packages/svgmap/dist/svgMapLayerLib.js"></script>
+
+		<script>
+			const logEl = document.getElementById("log");
+			function log(...args) {
+				const text = args
+					.map((v) => (typeof v === "string" ? v : JSON.stringify(v, null, 2)))
+					.join(" ");
+				logEl.textContent = (logEl.textContent ? logEl.textContent + "\n" : "") + text;
+			}
+
+			function safeTypeof(name) {
+				try {
+					return typeof window[name];
+				} catch (_e) {
+					return "(error)";
+				}
+			}
+
+			document.getElementById("btnClear").addEventListener("click", () => {
+				logEl.textContent = "";
+			});
+
+			document.getElementById("btnMessage").addEventListener("click", () => {
+				if (typeof window.putGlobalMessage === "function") {
+					window.putGlobalMessage(
+						"Hello from WebApp layer (layerID=" + window.layerID + ")"
+					);
+					log("putGlobalMessage(): ok");
+				} else {
+					log("putGlobalMessage(): not available yet");
+				}
+			});
+
+			document.getElementById("btnInspect").addEventListener("click", () => {
+				log("layerID:", window.layerID);
+				log("controllerSrc:", window.controllerSrc);
+				log("typeof svgMap:", safeTypeof("svgMap"));
+				log("typeof svgImageProps:", safeTypeof("svgImageProps"));
+				log("typeof svgImage:", safeTypeof("svgImage"));
+				log("typeof svgMapLayerUI:", safeTypeof("svgMapLayerUI"));
+			});
+
+			document.addEventListener("openFrame", () => {
+				log("event: openFrame (initialized)");
+				log("layerID:", window.layerID);
+			});
+			document.addEventListener("appearFrame", () => log("event: appearFrame"));
+			document.addEventListener("hideFrame", () => log("event: hideFrame"));
+			document.addEventListener("closeFrame", () => log("event: closeFrame"));
+
+			document.addEventListener("zoomPanMap", () => log("event: zoomPanMap"));
+			document.addEventListener("screenRefreshed", () => log("event: screenRefreshed"));
+			document.addEventListener("zoomPanMapCompleted", () =>
+				log("event: zoomPanMapCompleted")
+			);
+
+			log("controller loaded: waiting for injection...");
+		</script>
+	</body>
+</html>

@@ -2,7 +2,7 @@
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
-import { SvgMapGIS } from "../../SVGMapLv0.1_GIS_r4_module";
+import { SvgMapGIS } from "@penguings/svgmapjs-gis";
 import { mock_svgmapObj } from "./resources/mockParamerters";
 import { expect, jest } from "@jest/globals";
 

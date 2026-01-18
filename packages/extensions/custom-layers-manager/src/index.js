@@ -1,4 +1,4 @@
-import { SvgMapCustomLayersManager } from "../../../../SVGMapLv0.1_CustomLayersManager_r3module.js";
+import { SvgMapCustomLayersManager } from "./SVGMapLv0.1_CustomLayersManager_r3module.js";
 
 export { SvgMapCustomLayersManager };
 

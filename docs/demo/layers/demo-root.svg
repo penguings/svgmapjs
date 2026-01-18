@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	Demo SVG for svgmapjs (this fork)
+	This file is intended for local demo usage.
+	License: MPL-2.0 (same as this repository)
+-->
+<svg
+	xmlns="http://www.w3.org/2000/svg"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:go="http://purl.org/svgmap/profile"
+	viewBox="13500 -3375 1125 1125"
+	go:dataArea="13500 -3375 1125 1125"
+>
+	<metadata>
+		<rdf:RDF
+			xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+			xmlns:crs="http://opengis.org/xmldtds/transformations.dtd"
+			xmlns:svg="http://www.w3.org/svg"
+		>
+			<rdf:Description>
+				<crs:CoordinateReferenceSystem
+					rdf:resource="http://purl.org/crs/84"
+					svg:transform="matrix(100,0,0,-100,0,0)"
+				/>
+			</rdf:Description>
+		</rdf:RDF>
+	</metadata>
+	<globalCoordinateSystem
+		srsName="http://purl.org/crs/84"
+		transform="matrix(100,0,0,-100,0,0)"
+	/>
+
+	<rect x="13500" y="-3375" width="1125" height="1125" fill="#f3f4f6" />
+	<g stroke="#9ca3af" stroke-width="2" fill="none">
+		<path d="M13500 -2812.5 H14625" />
+		<path d="M14062.5 -3375 V-2250" />
+	</g>
+
+	<g>
+		<circle cx="14062.5" cy="-2812.5" r="80" fill="#2563eb" fill-opacity="0.85" />
+		<circle cx="13850" cy="-3000" r="40" fill="#16a34a" fill-opacity="0.85" />
+		<circle cx="14300" cy="-2600" r="40" fill="#dc2626" fill-opacity="0.85" />
+		<text x="13540" y="-3300" font-size="70" fill="#111827">svgmapjs demo-root.svg</text>
+		<text x="13540" y="-3210" font-size="45" fill="#374151">Pan/Zoom with mouse or touch</text>
+	</g>
+</svg>

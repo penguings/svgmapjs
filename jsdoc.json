@@ -1,13 +1,13 @@
 {
 	"source": {
 		"include": [
-			"SVGMapLv0.1_r18module.js",
-			"SVGMapLv0.1_Class_r18module.js",
-			"SVGMapLv0.1_GIS_r4_module.js",
-			"SVGMapLv0.1_LayerUI_r6module.js",
-			"SVGMapLv0.1_CustomLayersManager_r3module.js",
-			"svgMapLayerLib.js",
-			"libs"
+			"packages/svgmap/src/SVGMapLv0.1_r18module.js",
+			"packages/svgmap/src/SVGMapLv0.1_Class_r18module.js",
+			"packages/extensions/gis/src/SVGMapLv0.1_GIS_r4_module.js",
+			"packages/extensions/layer-ui/src/SVGMapLv0.1_LayerUI_r6module.js",
+			"packages/extensions/custom-layers-manager/src/SVGMapLv0.1_CustomLayersManager_r3module.js",
+			"packages/svgmap/src/assets/svgMapLayerLib.js",
+			"packages/svgmap/src/libs"
 		],
 		"includePattern": ".+\\.js$",
 		"excludePattern": "(^|\\/|\\\\)(dist|node_modules|tests)(\\/|\\\\)|SVGMapSerializer_obsoluted\\.js$"

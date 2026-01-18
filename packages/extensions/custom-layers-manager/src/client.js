@@ -1,1 +1,1 @@
-export * from "../../../../SVGMapCustomLayersManagerClient.js";
+export * from "./SVGMapCustomLayersManagerClient.js";

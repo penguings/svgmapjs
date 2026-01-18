@@ -5,6 +5,7 @@
 	"type": "module",
 	"description": "svgmapjs core (work-in-progress monorepo package)",
 	"exports": {
-		".": "./dist/index.js"
+		".": "./dist/index.js",
+		"./svgMapLayerLib.js": "./dist/svgMapLayerLib.js"
 	}
 }

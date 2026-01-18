@@ -8,8 +8,8 @@
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 // このライブラリは現在のところ使われていません
-import { UtilFuncs } from "./libs/UtilFuncs.js";
-import { MatrixUtil } from "./libs/TransformLib.js";
+import { UtilFuncs } from "./UtilFuncs.js";
+import { MatrixUtil } from "./TransformLib.js";
 
 class SVGMapSerializer {
 	constructor(mapTicker, getDocumentId, getMetaSchema, svgImagesProps) {

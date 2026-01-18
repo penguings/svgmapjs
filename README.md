@@ -39,11 +39,19 @@ Example (npm workspace / this fork packages):
 ```js
 import {
   SvgMap,
-  SvgMapDefaultExtensionsPlugin,
+  SvgMapAuthoringPlugin,
+  SvgMapLayerUIPlugin,
+  SvgMapCustomLayersManagerPlugin,
+  SvgMapCesiumPlugin,
 } from "@penguings/svgmapjs";
 
 const svgMap = new SvgMap({
-  plugins: [SvgMapDefaultExtensionsPlugin],
+  plugins: [
+	SvgMapAuthoringPlugin,
+	SvgMapLayerUIPlugin,
+	SvgMapCustomLayersManagerPlugin,
+	SvgMapCesiumPlugin,
+  ],
 });
 ```
 

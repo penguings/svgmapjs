@@ -47,6 +47,13 @@ class MapTicker {
 	) {
 		this.#svgMapObject = svgMapObject;
 		this.#centerSight = document.getElementById("centerSight"); // ISSUE centerSightがないとtickerができないのはまずすぎる
+		if (!this.#centerSight) {
+			this.#centerSight = document.createElement("span");
+			this.#centerSight.id = "centerSight";
+			(document.body || document.documentElement).appendChild(
+				this.#centerSight
+			);
+		}
 		if (!this.#ticker) {
 			var parentElem = this.#centerSight.parentNode;
 			this.#ticker = document.createElement("span");

@@ -1,4 +1,4 @@
-import { SvgMapAuthoringTool } from "../../../../SVGMapLv0.1_Authoring_r8_module.js";
+import { SvgMapAuthoringTool } from "./SVGMapLv0.1_Authoring_r8_module.js";
 
 export { SvgMapAuthoringTool };
 

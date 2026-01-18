@@ -54,7 +54,7 @@ href : URL : レイヤールートのxlink:hrefにそのURLを設定
 [others] : VAL: [others]アトリビュートにそのVALを設定
 **/
 
-import { InterWindowMessaging } from "./InterWindowMessaging.js";
+import { InterWindowMessaging } from "@penguings/svgmapjs";
 
 class SvgMapCustomLayersManager {
 	constructor(svgMap, layersCustomizerGetter) {

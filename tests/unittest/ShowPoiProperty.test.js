@@ -2,9 +2,9 @@
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
-import { ShowPoiProperty } from "../../libs/ShowPoiProperty";
+import { ShowPoiProperty } from "@penguings/svgmapjs";
 import { mock_svgmapObj } from "./resources/mockParamerters";
-import { UtilFuncs } from "../../libs/UtilFuncs";
+import { UtilFuncs } from "@penguings/svgmapjs";
 import { jest } from "@jest/globals";
 
 describe("unittest for ShowPoiProperty", () => {

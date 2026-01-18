@@ -1,4 +1,4 @@
-import { SvgMapCesiumWrapper } from "../../../../3D_extension/SVGMapLv0.1_CesiumWrapper_r4module.js";
+import { SvgMapCesiumWrapper } from "./3D_extension/SVGMapLv0.1_CesiumWrapper_r4module.js";
 
 export { SvgMapCesiumWrapper };
 

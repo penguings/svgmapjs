@@ -10,7 +10,7 @@
 // History:
 // 2022/07/19- SVGMapウィンド側と、カスタムレイヤマネージャアプリ側のライブラリを切り分け
 
-import { InterWindowMessaging } from "./InterWindowMessaging.js";
+import { InterWindowMessaging } from "@penguings/svgmapjs";
 
 class SvgMapCustomLayersManagerClient {
 	#iwmsg;

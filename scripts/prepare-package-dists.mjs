@@ -73,6 +73,22 @@ async function generateDistProxiesForPackage(packageDir) {
 		if (!target.startsWith("./dist/")) {
 			continue;
 		}
+		if (
+			pkg.name === "@penguings/svgmapjs" &&
+			exportKey === "./svgMapLayerLib.js" &&
+			target === "./dist/svgMapLayerLib.js"
+		) {
+			const srcAbs = path.join(
+				packageDir,
+				"src",
+				"assets",
+				"svgMapLayerLib.js",
+			);
+			const distAbs = path.join(packageDir, "dist", "svgMapLayerLib.js");
+			const content = await fs.readFile(srcAbs, "utf8");
+			await writeFileIfChanged(distAbs, content);
+			continue;
+		}
 		const distRel = target.slice(2); // remove leading "./"
 		const srcRel = target.replace("./dist/", "./src/").slice(2);
 		const distAbs = path.join(packageDir, distRel);
