@@ -1,203 +1,272 @@
-// Description:  window間で、メッセージングによってデータのやり取りをする。
-// Programmed by Satoru Takagi
+// Description:
+// InterWindowMessagingクラス（クロスオリジン版 ＋ 同一ドメインパスチェック統合）
+// クロスオリジンwindow間で、指定した関数をPromise実行、帰り値を得る
+//
+// History:
+// 2022/08/10 1st rel.
+// 2025/07/02 ホワイトリストで別オリジンからのメッセージを受け取りも可能にする
+//
+// 別系統(S-LaWA用InterWindowMessaging:クロスオリジン通信用)
+// 2025/08/04 First implementation
+// 2025/09/08 セキュリティ改善 : "negotioation"機構を構築し、targetOriginに"*"を使用しないで済むようにした
+//
+// リファクタリング
+// 2026/03/02 S-LaWA用をベースに統合 ～ 同一ドメイン時のパスチェック機能とGetter対応を追加
+//
+//  Programmed by Satoru Takagi
 //
 // License: (MPL v2)
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
-//
-// History:
-// 2022/08/10 1st rel.
-// 2025/07/02 ホワイトリストで別オリジンからのメッセージを受け取りも可能にする
 
 class InterWindowMessaging {
-	constructor(
-		functionSet,
-		targetWindow_or_itsGetter,
-		responseReady,
-		allowedOrigins = [],
-	) {
-		/**
-		console.log(
-			"InterWindowMessaging:functionSet, targetWindow, responseReady",
-			functionSet,
-			targetWindow_or_itsGetter,
-			responseReady
-		);
-		**/
-		if (!targetWindow_or_itsGetter) {
-			console.warn("No targetWindow_or_itsGetter Exit.");
-			console.warn("targetWindow_or_itsGetter is not Window instance");
+	constructor(functionSet, targetWindow, targetOrigin) {
+		// functionSet に connectionReady関数が含まれている場合接続が確認したら呼び出される
+		if (!targetWindow) {
+			console.warn("No targetWindow provided.");
 			return;
 		}
-		/** ??? window.openerがWindowにならない？
-		if ( targetWindow instanceof Window == false){
-			console.warn("targetWindow is not Window instance" );
+		// --- 統合修正: targetOriginの型判定による互換性維持 ---
+		if (targetOrigin === undefined || targetOrigin === null) {
+			console.log("No targetOrigin provided, regard as same origin. ");
+		}
+		if (typeof functionSet !== "object") {
+			console.warn("functionSet must be an object.");
 			return;
 		}
-		if ( functionSet instanceof Object == false){
-			console.warn("invalid functionSet");
-			return;
+
+		this.#functionSet = functionSet;
+
+		// --- 統合修正: Getter関数のサポート ---
+		if (typeof targetWindow === "function") {
+			this.#targetWindowGetter = targetWindow;
+		} else {
+			this.#targetWindow = targetWindow;
 		}
-		**/
+
+		// --- 統合修正: 引数がboolean(旧版)かstring(n版)かで分岐 ---
+		if (targetOrigin === "negotiation") {
+			//console.log ("InterWindowMessaging construct enter negotiation process");
+			this.#targetOrigin = null;
+			this.#isNegotiating = true;
+			this.#negotiationKey = crypto.randomUUID(); // ネゴシエーション用の乱数を生成
+		} else if (typeof targetOrigin === "string") {
+			//console.log ("InterWindowMessaging construct basic process");
+			this.#targetOrigin = targetOrigin;
+			this.#isNegotiating = false;
+		} else {
+			// 旧版互換: targetOriginにboolean(ready)が渡された場合　もしくは省略されている場合
+			// Same Originとする
+			this.#targetOrigin = window.location.origin;
+			this.#isNegotiating = false;
+			if (targetOrigin === true) this.#readyState = true;
+		}
+
+		//console.log("targetOrigin:", this.#targetOrigin);
 		this.#setMessageListener();
 
-		this.#functionSet_int = functionSet;
-		if (typeof targetWindow_or_itsGetter == "object") {
-			this.#targetWindow = targetWindow_or_itsGetter;
-		} else {
-			this.#targetWindowGetter = targetWindow_or_itsGetter; // インスタンス生成時にまだターゲットのウィンドが確定していないケースがある
-		}
-
-		if (responseReady == true) {
-			this.#submitReady();
-			this.#readyState = true;
-		}
-
-		// コンストラクタでホワイトリストを受け取る
-		if (Array.isArray(allowedOrigins)) {
-			this.#allowedOrigins = allowedOrigins;
-		} else {
-			console.warn("InterWindowMessaging: allowedOrigins must be an array.");
-		}
+		// オブジェクト初期化時に自動でreadyメッセージを送信
+		this.#submitReady(); // 先に立ち上がったほうのReadyは当然受け取れない
 	}
 
-	#targetWindow = null; // イベント受信先の同定用、下のgetterかこちらのどちらかが設定されている
+	#targetWindow = null;
 	#targetWindowGetter = null;
 	#readyState = false;
-	#allowedOrigins;
-
-	#functionSet_int;
-	// functionSetは、インスタンス生成時に指定する。
-	// 連想配列、Key: 関数名、Val: 関数（bindはたいてい必要だと思います。）
+	#functionSet = {};
+	#targetOrigin = null;
+	#pendingResponses = new Map();
+	// ネゴシエーション機能のためのプロパティ
+	#isNegotiating = false;
+	#negotiationKey = null;
+	#isNegotiatingCount = 0;
 
 	#setMessageListener() {
-		window.addEventListener(
-			"message",
-			async function (event) {
-				const isOriginAllowed =
-					this.#allowedOrigins.includes(event.origin) ||
-					event.origin === window.location.origin;
-				if (!isOriginAllowed) {
-					console.warn(
-						`InterWindowMessaging: Message blocked from untrusted origin: ${event.origin}`,
-					);
-					return;
-				}
-				var targetWin = this.#getTargetWindow();
-				if (
-					!targetWin ||
-					event.source.location.pathname != targetWin.location.pathname
-				)
-					return;
-				console.log(
-					"InterWindowMessaging get message:",
-					event.data,
-					" srcWin:",
-					event.source,
-					" srcPath:",
-					event.source.location.pathname,
-				);
-				var msg = JSON.parse(event.data);
-				if (msg.command) {
-					if (this.#functionSet_int[msg.command]) {
-						var ans = await this.#functionSet_int[msg.command](
-							...msg.parameter,
-						);
-						var resp = {
-							response: msg.command,
-							content: ans,
-						};
-						console.log("========\ncmd:", msg.command);
-						console.log("parameter:", msg.parameter);
-						console.log("ans:", ans);
-						var messageJson = JSON.stringify(resp);
-						targetWin.postMessage(messageJson, targetWin.origin);
-					} else {
-						console.log(
-							"========\ncmd:",
-							msg.command,
-							" is not exists within commandSet",
-						);
-						var messageJson = JSON.stringify({ response: "error" });
-						targetWin.postMessage(messageJson, targetWin.origin);
-					}
-				} else if (msg.ready == true) {
-					console.log("Get ready!");
-					this.#readyState = true;
-				}
+		window.addEventListener("message", async (event) => {
+			const origin = event.origin;
 
-				if (this.#messageCallbackObj) {
-					this.#messageCallbackObj(event.data);
-					this.#messageCallbackObj = null;
-				}
-			}.bind(this),
-			false,
-		);
-	}
-
-	#getTargetWindow = function () {
-		var targetWin;
-		if (this.#targetWindowGetter) {
-			targetWin = this.#targetWindowGetter();
-		} else {
-			targetWin = this.#targetWindow;
-		}
-		return targetWin;
-	}.bind(this);
-
-	#messageCallbackObj = null;
-	#retryMax = 100;
-	#postMessagePromise(messageJson) {
-		// postMessageに対して返却があるケースはこちらを使ってawaitする
-		return new Promise(
-			async function (okCallback, ngCallback) {
-				var rc = 0;
-				while (this.#readyState == false || this.#messageCallbackObj != null) {
-					console.log("waiting post message");
-					if (rc > this.#retryMax) {
-						ngCallback(
-							"postMessagePromise: Now waiting message. skip.  command:" +
-								JSON.parse(messageJson).command,
-						);
+			// --- 統合修正: 同一ドメイン時のパスチェック(混線防止) ---
+			if (origin === window.location.origin) {
+				try {
+					const targetWin = this.#getTargetWindow();
+					if (
+						targetWin &&
+						event.source.location.pathname !== targetWin.location.pathname
+					) {
 						return;
 					}
-					await this.#sleep(5);
-					++rc;
+				} catch (e) {
+					// クロスオリジン時はエラーになるため無視
 				}
-				this.#messageCallbackObj = okCallback;
-				var targetWin = this.#getTargetWindow();
-				targetWin.postMessage(messageJson, targetWin.origin);
-			}.bind(this),
-		);
+			}
+
+			//console.log("Recieve message", event, " from ", event.origin, " on ", location.origin);
+			let msg;
+			try {
+				// messageのdataが文字列の場合はJSON.parse、それ以外はそのまま
+				msg =
+					typeof event.data === "string" ? JSON.parse(event.data) : event.data;
+			} catch (e) {
+				console.warn("Invalid message data format:", event.data);
+				return;
+			}
+			//console.log("Recieve message", msg, " from ", event.origin, " on ", location.origin);
+
+			// 親ウィンドウ（ネゴシエーションモード接続を受ける側）の処理
+			if (!this.#isNegotiating && msg.negotiationKey) {
+				// 子から乱数を受け取ったら、そのまま返信
+				this.#postMessage({
+					ready: true,
+					negotiationKey: msg.negotiationKey,
+				});
+				return;
+			}
+			// 子ウィンドウ（ネゴシエーションモード接続を発出する側）の処理
+			if (this.#isNegotiating && !this.#targetOrigin) {
+				if (msg.ready === true && msg.negotiationKey === this.#negotiationKey) {
+					this.#targetOrigin = origin;
+					this.#isNegotiating = false;
+					this.#completeConnection();
+					return;
+				}
+				if (this.#isNegotiatingCount < 2) {
+					//console.log("Retry Negotiation because of negotiating side launches faster");
+					this.#submitReady(); // 先にNegotioationしないほうが立ち上がった場合は1度はチャレンジする
+				} else {
+					console.warn(
+						"Ignoring message during negotiation phase from:",
+						origin,
+						" msg:",
+						msg,
+					);
+				}
+				return;
+			}
+
+			if (this.#targetOrigin != "*" && this.#targetOrigin != origin) {
+				console.warn(
+					`Message from disallowed origin: ${origin} (Allowed:${this.#targetOrigin})`,
+				);
+				return;
+			}
+
+			// Transferable Objectsを含むメッセージの処理
+			if (msg.transferable) {
+				msg.parameter = msg.parameter || [];
+				msg.parameter[msg.transferable.index] = event.data;
+			}
+
+			if (msg.response && msg.id && this.#pendingResponses.has(msg.id)) {
+				this.#pendingResponses.get(msg.id).resolve(msg);
+				this.#pendingResponses.delete(msg.id);
+				return;
+			}
+
+			if (msg.ready === true) {
+				if (!this.#readyState) {
+					this.#completeConnection();
+				}
+				return;
+			}
+
+			if (msg.command && typeof msg.command === "string") {
+				const func = this.#functionSet[msg.command];
+				if (typeof func === "function") {
+					const params = Array.isArray(msg.parameter)
+						? msg.parameter
+						: msg.parameter !== null && msg.parameter !== undefined
+							? [msg.parameter]
+							: [];
+					const result = await func(...params);
+
+					const response = {
+						id: msg.id || null,
+						response: msg.command,
+						content: result,
+					};
+					this.#postMessage(response);
+				} else {
+					console.warn(`Unknown command: ${msg.command}`);
+					this.#postMessage({
+						id: msg.id || null,
+						response: "error",
+						error: "Unknown command",
+					});
+				}
+			}
+		});
 	}
 
-	#sleep = (ms) => new Promise((res) => setTimeout(res, ms));
-
-	async callRemoteFunc(fName, paramArray) {
-		console.log("callRemoteFunc:", fName);
-		var messageObj = { command: fName, parameter: paramArray };
-		var messageJson = JSON.stringify(messageObj);
-		var ret = await this.#postMessagePromise(messageJson);
-		ret = JSON.parse(ret);
-		if (ret.response == fName) {
-			return ret.content;
-		} else {
-			return null;
+	#completeConnection() {
+		console.log(
+			`Connection successful. Target origin set to: ${this.#targetOrigin}`,
+		);
+		this.#readyState = true;
+		this.#submitReady();
+		if (typeof this.#functionSet["connectionReady"] === "function") {
+			this.#functionSet["connectionReady"](true);
 		}
+	}
+
+	#getTargetWindow() {
+		return this.#targetWindowGetter
+			? this.#targetWindowGetter()
+			: this.#targetWindow;
+	}
+
+	#postMessage(messageObject, transferables = []) {
+		const targetWin = this.#getTargetWindow();
+		if (!targetWin) {
+			console.warn("Target window not available");
+			return;
+		}
+
+		// ネゴシエーションモードで初期メッセージを送る場合のみ、ターゲットオリジンを`*`にする
+		const postOrigin =
+			this.#isNegotiating && !this.#targetOrigin ? "*" : this.#targetOrigin;
+
+		// 移譲可能オブジェクトがある場合
+		if (transferables.length > 0) {
+			targetWin.postMessage(messageObject, postOrigin, transferables);
+		} else {
+			// --- 統合修正: 旧版との互換性を高めるため、基本はJSON文字列で送信 ---
+			targetWin.postMessage(JSON.stringify(messageObject), postOrigin);
+		}
+	}
+
+	async callRemoteFunc(command, parameter = [], transferables = []) {
+		await this.getReady();
+
+		const id = crypto.randomUUID();
+		const message = {
+			id,
+			command,
+			parameter,
+		};
+
+		return new Promise((resolve, reject) => {
+			this.#pendingResponses.set(id, { resolve, reject });
+			this.#postMessage(message, transferables);
+		}).then((msg) => msg.content);
 	}
 
 	#submitReady() {
-		var targetWin = this.#getTargetWindow();
-		console.log("submitReady:", targetWin);
-		targetWin.postMessage(JSON.stringify({ ready: true }), targetWin.origin);
+		let message;
+		if (this.#isNegotiating) {
+			// ネゴシエーション用の初期メッセージ
+			message = { ready: true, negotiationKey: this.#negotiationKey };
+			this.#isNegotiatingCount++;
+		} else {
+			// 通常のreadyメッセージ
+			message = { ready: true };
+		}
+		this.#postMessage(message);
 	}
 
 	async getReady() {
-		while (this.#readyState == false) {
-			await this.#sleep(5);
+		while (!this.#readyState) {
+			await new Promise((res) => setTimeout(res, 5));
 		}
-		console.log("Ready!");
 	}
 }
 
