@@ -187,6 +187,8 @@
 // 2023/12/28 : SVGMap*Class*.jsはクラス定義を、SVGMap*module.jsは、SvgMapインスタンスの生成を行うコード(ほぼ空)に分離。
 // 2024/02/06 : LayerSpecificWebAppHandlerのLayerUIからの分離に対応。
 // 2024/08/06 : コンテナ差分ファイル指定機能：(#customLayers=customLayer0.json
+// 2026/04/02 : Rev17のリファクタリング時に任意図法描画サポートが外れてしまっていたものを復活
+// 2026/04/16 : S-LaWA (別オリジンのままsvgmapjsインスタンスと隔離されたLaWA)を実装
 //
 // Issues:
 // 2022/03/17 getVectorObjectsAtPointの作法が良くない
@@ -552,7 +554,31 @@ class SvgMap {
 			// 2014.5.27 canvas統合用に、rootLayerPropに、"root"のレイヤーのidを子孫のレイヤーに追加
 			// 2017.9.29 nocache処理のため、こちらに移動
 			this.#setLayerDivProps(id, parentElem, parentSvgDocId);
+
 			var that = this;
+			// 【S-LaWA Lv2】 LayerSpecificWebAppHandler にインターセプトを委譲 2026/4/8
+			if (this.#layerSpecificWebAppHandler && parentSvgDocId == "root") {
+				var animationElem = this.#layerManager.getLayer(id);
+				// console.log("id:",id, " parentSvgDocId:",parentSvgDocId," parentElem:",parentElem," path:",path," animationElem:",animationElem);
+				var dummyRes =
+					this.#layerSpecificWebAppHandler.createSLaWADummyResponse(
+						path,
+						id,
+						animationElem,
+						parentSvgDocId,
+					);
+				// console.log("dummyRes:",dummyRes);
+				if (dummyRes) {
+					// XHR通信と同じように非同期で #handleResult へダミーレスポンスを流し込む
+					this.#resourceLoadingObserver.loadingImgs[id] = true;
+					setTimeout(function () {
+						// console.log("S-LaWA Lv2:",dummyRes);
+						that.#handleResult(id, path, parentElem, dummyRes, parentSvgDocId);
+					}, 0);
+					return; // ★本物のXHR通信をスキップ
+				}
+			}
+
 			//		var httpObj = createXMLHttpRequest( function(){ return handleResult(id , path , parentElem , this); } );
 			var httpObj = this.#createXMLHttpRequest(
 				function () {
@@ -731,7 +757,7 @@ class SvgMap {
 					mutations.forEach(
 						function (mutation) {
 							if (mutation.type == "attributes") {
-								//							console.log("Detect attr change, delete parsed cache for : ",mutation.target);
+								// console.log("Detect attr change, delete parsed cache for : ",mutation.target);
 								this.#svgImagesProps[docId].styleMap.delete(mutation.target);
 								this.#svgImagesProps[docId].altdMap.delete(mutation.target);
 							}
@@ -767,18 +793,7 @@ class SvgMap {
 			); // 2016.10.14
 			// ルートコンテナSVGのロード時専用の処理です・・・ 以下は基本的に起動直後一回しか通らないでしょう
 			if (docId == "root") {
-				this.#mapViewerProps.rootCrs = this.#svgImagesProps[docId].CRS;
-				this.#mapViewerProps.root2Geo = this.#matUtil.getInverseMatrix(
-					this.#mapViewerProps.rootCrs,
-				);
-				var viewBox = this.#getViewBox(this.#svgImages["root"]);
-				this.#mapViewerProps.setRootViewBox(
-					UtilFuncs.getrootViewBoxFromRootSVG(
-						viewBox,
-						this.#mapViewerProps.mapCanvasSize,
-						this.#essentialUIs.ignoreMapAspect,
-					),
-				);
+				this.#setupRootMapProperties();
 			} else {
 				if (this.#layerManager.isEditableLayer(docId)) {
 					this.#svgImagesProps[docId].editable = true;
@@ -787,9 +802,33 @@ class SvgMap {
 			this.#dynamicLoad(docId, parentElem);
 		}
 	}
-	/*
-	}}
-	*/
+
+	/**
+	 * rootの情報確定時に各種プロパティを設定する
+	 */
+	#setupRootMapProperties() {
+		// Rootの図法（CRS）が確定したタイミングで、システム根幹のプロパティをセットアップする
+		this.#mapViewerProps.rootCrs = this.#svgImagesProps["root"].CRS;
+		this.#mapViewerProps.root2Geo = this.#matUtil.getInverseMatrix(
+			this.#mapViewerProps.rootCrs,
+		);
+
+		var viewBox = this.#getViewBox(this.#svgImages["root"]);
+		this.#mapViewerProps.setRootViewBox(
+			UtilFuncs.getrootViewBoxFromRootSVG(
+				viewBox,
+				this.#mapViewerProps.mapCanvasSize,
+				this.#essentialUIs.ignoreMapAspect,
+			),
+		);
+		// 図法確定に伴い、geoViewBox (NaNになっている可能性がある) も正しい値で上書き計算しておく(念のため)
+		this.#essentialUIs.setGeoViewBox(
+			this.#matUtil.getTransformedBox(
+				this.#mapViewerProps.rootViewBox,
+				this.#mapViewerProps.root2Geo,
+			),
+		);
+	}
 
 	#existNodes = new Object(); // 存在するノードのidをハッシュキーとしたテーブル
 
@@ -805,6 +844,7 @@ class SvgMap {
 			parentElem = this.#mapViewerProps.mapCanvas;
 		}
 		var svgDoc = this.#svgImages[docId];
+		// console.log("dynamicLoad: docId:",docId," doc:",svgDoc);
 		svgDoc.documentElement.setAttribute("about", docId);
 
 		parentElem.setAttribute("property", this.#svgImagesProps[docId].metaSchema); // added 2012/12
@@ -1085,6 +1125,12 @@ class SvgMap {
 				console.warn("docId:", docId, "'s CRS is not resolved skip.");
 				return;
 			}
+			if (docId === "root") {
+				// 2026/04/02 任意図法変換サポートのrev17以降での実装漏れ復活
+				// console.log("Rootの任意図法変換のための設定を実施");
+				this.#setupRootMapProperties();
+			}
+			crs = this.#svgImagesProps[docId].CRS; // これは全てでこうしたほうが良いかな?・・・2026/04/02
 		}
 		this.#svgImagesProps[docId].isSVG2 = this.#svgImagesProps[docId].CRS.isSVG2; // ちょっとむりやり 2014.2.10
 		var isSVG2 = this.#svgImagesProps[docId].isSVG2;
@@ -3130,6 +3176,17 @@ class SvgMap {
 			this.#layerSpecificWebAppHandler.checkLayerListAndRegistLayerUI();
 		}.bind(this);
 		**/
+		return {
+			// issue #21への対応 (SVGMapLv0.1_LayerUI*.jsで呼ばれている二つのメソッドを返却)
+			showLayerSpecificUI:
+				this.#layerSpecificWebAppHandler.showLayerSpecificUI.bind(
+					this.#layerSpecificWebAppHandler,
+				),
+			updateLayerSpecificWebAppHandler:
+				this.#layerSpecificWebAppHandler.updateLayerSpecificWebAppHandler.bind(
+					this.#layerSpecificWebAppHandler,
+				),
+		};
 	}
 
 	/**
