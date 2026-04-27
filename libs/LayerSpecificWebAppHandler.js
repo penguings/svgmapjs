@@ -1079,14 +1079,16 @@ class LayerSpecificWebAppHandler {
 				controllerWindow.svgImageProps.CRS.transformFunctionName +
 				",";
 			console.log("transformRetStr set:", transformRetStr);
+			/** 2026/04/27 もう少し根本的な解決方法を試みてみる =>*2RS
 			setTimeout(
-				// 2025/12/17 LaWAの初期化が非同期のため、再描画後にCRSが設定されると表示されないケースがあるのを防ぐ(根本解決ではないが・・・・99%ぐらい回避できている)
+				// 2025/12/17 LaWAの初期化が非同期のため、再描画後にCRSが設定されると表示されないケース(天気図など)があるのを防ぐ(根本解決ではないが・・・・99%ぐらい回避できている)
 				function () {
 					console.log("Has CRS transform function force refreshScreen.");
 					this.#svgMap.refreshScreen();
 				}.bind(this),
 				1000,
 			);
+			**/
 		}
 
 		controllerWindow.svgScript = controllerWindow.Function(`
@@ -1177,6 +1179,14 @@ class LayerSpecificWebAppHandler {
 			controllerWindow.preRenderFunction =
 				controllerWindow.svgImageProps.script.preRenderFunction;
 		}
+		
+		// *2RS : スクリプトの評価完了（CRS関数の準備完了）をフックし、保留された初期化を回収する　2026/04/27
+		if (controllerWindow.svgImageProps.CRS && controllerWindow.svgImageProps.CRS.unresolved) {
+			console.log("CRS script evaluated. Force refreshScreen to apply deferred configs.");
+			// refreshScreen内部の queueMicrotask により、スタックの末尾に積まれて実行されるはず
+			this.#svgMap.refreshScreen();
+		}
+		
 		controllerWindow.svgImageProps.script.onloadFunction(
 			this.#getLayerStatus(controllerWindow.layerID),
 		);
