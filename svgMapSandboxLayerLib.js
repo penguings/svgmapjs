@@ -53,7 +53,7 @@ function initSandboxLayer() {
 					const xmlSerializer = new XMLSerializer();
 					// HTMLのDOMではなく、XML Document オブジェクトそのものを渡す
 					const svgXmlWithIds = xmlSerializer.serializeToString(
-						window.svgImage,
+						window.svgImage
 					);
 
 					//console.log("[S-LaWA Lv2] 親へ置換を要求します。送信サイズ:", svgXmlWithIds.length);
@@ -88,7 +88,7 @@ function initSandboxLayer() {
 			},
 		},
 		window.parent,
-		"negotiation", //2025/09/02 セキュリティ改善
+		"negotiation" //2025/09/02 セキュリティ改善
 	);
 }
 
@@ -134,7 +134,7 @@ function setSvgImageProps(receivedPropsJSONtext) {
 	const receivedProps = JSON.parse(receivedPropsJSONtext);
 	for (let key in receivedProps) {
 		if (key == "hash") {
-			_int_hashVal = receivedProps[key];
+			window.svgImageProps._int_hashVal = receivedProps[key];
 		} else {
 			window.svgImageProps[key] = receivedProps[key]; // あ、これhashをセットするとセッターが動いてえらいことにならない？
 		}
@@ -415,14 +415,14 @@ async function callCustomShowPoiPropertyFunc(msg) {
 		if (targetSvgDoc.getElementsByTagName("parsererror").length > 0) {
 			console.error(
 				"XML parse error:",
-				newSvgDoc.getElementsByTagName("parsererror")[0],
+				newSvgDoc.getElementsByTagName("parsererror")[0]
 			);
 			return { src: "" };
 		}
 		const receivedNode = targetSvgDoc.documentElement.firstChild;
 		const slawa_id = receivedNode.getAttribute(CUSTOM_ID_ATTR);
 		const targetNode = svgImage.querySelector(
-			`[${CUSTOM_ID_ATTR}="${slawa_id}"]`,
+			`[${CUSTOM_ID_ATTR}="${slawa_id}"]`
 		);
 
 		//console.log("targetNode:",targetNode);

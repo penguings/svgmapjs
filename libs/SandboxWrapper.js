@@ -142,7 +142,7 @@ export class SandboxWrapper {
 			if (newSvgDoc.getElementsByTagName("parsererror").length > 0) {
 				console.error(
 					"XMLパースエラー:",
-					newSvgDoc.getElementsByTagName("parsererror")[0],
+					newSvgDoc.getElementsByTagName("parsererror")[0]
 				);
 				return { svgdom: null, appurl: null };
 			}
@@ -222,7 +222,7 @@ export class SandboxWrapper {
 					},
 				},
 				this.sandboxFrame.contentWindow,
-				targetOrigin,
+				targetOrigin
 			);
 		});
 	}
@@ -258,7 +258,8 @@ export class SandboxWrapper {
 
 	#createSerializableSvgImageProps(obj) {
 		const geoViewBox = this.svgMap.getGeoViewBox();
-		const serializableObj = { ...obj, geoViewBox };
+		// obj.hash (Getter) を明示的にシリアライズ対象に加える
+		const serializableObj = { ...obj, hash: obj.hash, geoViewBox };
 		return JSON.stringify(serializableObj, (key, value) => {
 			// 循環参照の原因となるプロパティを特定して除外 2026/03/09
 			if (key === "controllerWindow") {
@@ -306,7 +307,7 @@ export class SandboxWrapper {
 			if (newSvgDoc.getElementsByTagName("parsererror").length > 0) {
 				console.error(
 					"XMLパースエラー:",
-					newSvgDoc.getElementsByTagName("parsererror")[0],
+					newSvgDoc.getElementsByTagName("parsererror")[0]
 				);
 				return false;
 			}
@@ -334,7 +335,7 @@ export class SandboxWrapper {
 		try {
 			while (svgImageDom.documentElement.firstChild) {
 				svgImageDom.documentElement.removeChild(
-					svgImageDom.documentElement.firstChild,
+					svgImageDom.documentElement.firstChild
 				);
 			}
 			const newSvgRoot = newSvgDoc.documentElement;
@@ -370,14 +371,14 @@ export class SandboxWrapper {
 
 				if (type === "deletion") {
 					const node = this.svgImage.querySelector(
-						`[${CUSTOM_ID_ATTR}="${payload.id}"]`,
+						`[${CUSTOM_ID_ATTR}="${payload.id}"]`
 					);
 					if (node) {
 						node.parentNode.removeChild(node);
 					}
 				} else if (type === "attributeChange") {
 					const node = this.svgImage.querySelector(
-						`[${CUSTOM_ID_ATTR}="${payload.id}"]`,
+						`[${CUSTOM_ID_ATTR}="${payload.id}"]`
 					);
 					if (node) {
 						if (payload.attr === "textContent") {
@@ -388,12 +389,12 @@ export class SandboxWrapper {
 					}
 				} else if (type === "addition") {
 					const parent = this.svgImage.querySelector(
-						`[${CUSTOM_ID_ATTR}="${payload.parentId}"]`,
+						`[${CUSTOM_ID_ATTR}="${payload.parentId}"]`
 					);
 					if (!parent) {
 						console.warn(
 							`Parent node not found for addition with ID: ${payload.id} , parentId:${payload.parentId} payload:`,
-							payload,
+							payload
 						);
 						return;
 					} else {
@@ -406,7 +407,7 @@ export class SandboxWrapper {
 					if (newSvgDoc.getElementsByTagName("parsererror").length > 0) {
 						console.error(
 							"XML parse error:",
-							newSvgDoc.getElementsByTagName("parsererror")[0],
+							newSvgDoc.getElementsByTagName("parsererror")[0]
 						);
 						return;
 					}
@@ -415,7 +416,7 @@ export class SandboxWrapper {
 
 					if (payload.nextSiblingId) {
 						const nextSibling = parent.querySelector(
-							`[${CUSTOM_ID_ATTR}="${payload.nextSiblingId}"]`,
+							`[${CUSTOM_ID_ATTR}="${payload.nextSiblingId}"]`
 						);
 						if (nextSibling) {
 							parent.insertBefore(newNode, nextSibling);
