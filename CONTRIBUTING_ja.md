@@ -17,7 +17,7 @@ npm install
 
 # Playwright（E2Eテスト用）のインストール
 npx playwright install
-sudo npx playwright install-deps
+npx playwright install-deps
 ```
 
 ## コード規約
