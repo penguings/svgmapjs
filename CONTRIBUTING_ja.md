@@ -43,7 +43,7 @@ npm test
 ```
 
 ### E2E テスト
-Playwright を使用したブラウザ上での動作確認テストです。
+Playwright を使用したブラウザ上での動作確認テストです。svgmapjsリポジトリの直下に移動した後、以下のコマンドを実行
 
 ```bash
 npm run e2e
