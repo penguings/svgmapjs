@@ -12,7 +12,7 @@
 //
 
 
-import { InterWindowMessaging } from "@penguings/svgmapjs";
+import { InterWindowMessaging } from "../InterWindowMessaging.js";
 
 class SvgMapCesiumWrapper {
 	constructor(svgMap) {

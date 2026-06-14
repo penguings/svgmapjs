@@ -1,6 +1,6 @@
 import { LayerSpecificWebAppHandler } from "./libs/LayerSpecificWebAppHandler.js";
 
-export { SvgMap } from "./SVGMapLv0.1_Class_r18module.js";
+export { SvgMap } from "./SVGMapClass.js";
 
 export * from "./InterWindowMessaging.js";
 

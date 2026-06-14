@@ -7,18 +7,15 @@
 // Programmed by Satoru Takagi
 //
 // Contributors:
+//  kusariya
+//  MCsamurai034
 //
+// License: (MPL v2)
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-"use strict"; // 2022/05/06 Strictに移行します
-// testClickedは何のためのもの？ 2018.2.2 のtestClickの廃止とともにこの変数及びセッター関数も廃止した
-//
-// 重複が疑われる関数  (getSymbolProps, getImageProps)
-// rootContainerでvector2Dが入ると破綻する 2014.7.25
-//
-
-//
-
-"use strict"; // 2022/05/06 Strictに移行します
+"use strict";
 
 // coreJsの部品群
 import { MatrixUtil, Mercator } from "./libs/TransformLib.js";

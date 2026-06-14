@@ -1,7 +1,7 @@
 {
 	"devDependencies": {
 		"@playwright/test": "^1.57.0",
-		"@rollup/plugin-terser": "^0.4.4",
+		"@rollup/plugin-terser": "^1.0.0",
 		"@testing-library/dom": "^10.4.1",
 		"@types/node": "^25.0.8",
 		"cross-env": "^10.1.0",
@@ -25,7 +25,9 @@
 		"test": "cross-env NODE_OPTIONS=--experimental-vm-modules npx jest",
 		"report": "cross-env NODE_OPTIONS=--experimental-vm-modules npx jest --coverage",
 		"e2e": "npx playwright test",
-		"build": "node scripts/prepare-package-dists.mjs && rollup -c",
+		"build:exports": "node scripts/prepare-package-dists.mjs",
+		"build:bundle": "rollup -c",
+		"build": "npm run build:exports && npm run build:bundle",
 		"docs:api": "jsdoc --lenient -c jsdoc.json"
 	},
 	"repository": {

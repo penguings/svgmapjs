@@ -2,14 +2,13 @@
 // Description:
 // SVGMap Standard LayerUI2 for SVGMapLv0.1 >rev17
 //
+//  Programmed by Satoru Takagi
 //
-
-// (FIXED?) IE,Edgeでdata-controller-src動作しない
-//  レイヤ固有UIを別ウィンドウ化できる機能があったほうが良いかも
-//   ただしこの機能は新たなcontextを生成する形でないと実装できないようです。
-//   See also: http://stackoverflow.com/questions/8318264/how-to-move-an-iframe-in-the-dom-without-losing-its-state
-//  (FIXED? 2017.9.8) レイヤUI表示ボタンが時々表示されない時がある (少なくとも一か所課題を発見し修正。本体も改修(getRootLayersProps))
-//  zoomPanMapCompletedは、fetchとXHRだけを見ているが、IndexedDBやworkerも見るようにすべき
+// License: (MPL v2)
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at https://mozilla.org/MPL/2.0/.
+//
 
 import { BuiltinIcons, LayerStyleCustomizer, UtilFuncs } from "@penguings/svgmapjs";
 
